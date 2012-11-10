@@ -1,3 +1,5 @@
+
+
 class DatabaseObject
 {
 public:
@@ -5,6 +7,7 @@ public:
 	~DatabaseObject();
 
 	virtual char* getUpdateSQL();
+	virtual char* getDeleteSQL();
 private:
 	int id; //первичный ключ объекта в его таблице
 }

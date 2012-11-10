@@ -101,9 +101,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\database-objects\DatabaseObject.h" />
+    <ClInclude Include="..\database-objects\Project.h" />
     <ClInclude Include="..\ProtocolSpecification.h" />
     <ClInclude Include="client.h" />
     <ClInclude Include="clientDlg.h" />
+    <ClInclude Include="projectDialog.h" />
     <ClInclude Include="RequestGenerator.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -111,8 +113,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\database-objects\DatabaseObject.cpp" />
+    <ClCompile Include="..\database-objects\Project.cpp" />
     <ClCompile Include="client.cpp" />
     <ClCompile Include="clientDlg.cpp" />
+    <ClCompile Include="projectDialog.cpp" />
     <ClCompile Include="RequestGenerator.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

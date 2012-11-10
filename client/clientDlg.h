@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RequestGenerator.h"
+#include "projectDialog.h"
 
 // диалоговое окно CclientDlg
 class CclientDlg : public CDialogEx
@@ -37,4 +38,11 @@ public:
 	afx_msg void lecturerAddRequested();
 	afx_msg void fullReportRequested();
 	afx_msg void diagramRequested();
+private:
+	CString lecturerName;
+	CString groupName;
+
+	CDialogEx *dialog;
+public:
+	afx_msg void projectAddCompleted();
 };

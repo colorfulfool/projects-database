@@ -13,6 +13,8 @@
 
 CclientDlg::CclientDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CclientDlg::IDD, pParent)
+	, lecturerName(_T(""))
+	, groupName(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -20,6 +22,8 @@ CclientDlg::CclientDlg(CWnd* pParent /*=NULL*/)
 void CclientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, lecturerEdit, lecturerName);
+	DDX_Text(pDX, groupEdit, groupName);
 }
 
 BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
@@ -35,6 +39,7 @@ BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
 	ON_COMMAND(ID_32773, &CclientDlg::lecturerAddRequested)
 	ON_COMMAND(ID_32774, &CclientDlg::fullReportRequested)
 	ON_COMMAND(ID_32775, &CclientDlg::diagramRequested)
+	ON_BN_CLICKED(sendButton, &CclientDlg::projectAddCompleted)
 END_MESSAGE_MAP()
 
 
@@ -91,25 +96,26 @@ HCURSOR CclientDlg::OnQueryDragIcon()
 
 void CclientDlg::lecturerProjectsRequested()
 {
-	// TODO: Add your control notification handler code here
+	RequestGenerator.instance()->lecturerProjects(lecturerName.GetString());
 }
 
 
 void CclientDlg::groupProjectsRequested()
 {
-	// TODO: Add your control notification handler code here
+	RequestGenerator.instance()->groupProjects(groupName.GetString());
 }
 
 
 void CclientDlg::allProjectsRequested()
 {
-	// TODO: Add your control notification handler code here
+	RequestGenerator.instance()->allProjects();
 }
 
 
 void CclientDlg::projectAddRequested()
 {
-	// TODO: Add your control notification handler code here
+	dialog = new projectDialog();
+	dialog->DoModal();
 }
 
 
@@ -139,11 +145,19 @@ void CclientDlg::lecturerAddRequested()
 
 void CclientDlg::fullReportRequested()
 {
-	// TODO: Add your command handler code here
+	RequestGenerator.instance()->allProjects();
 }
 
 
 void CclientDlg::diagramRequested()
 {
-	// TODO: Add your command handler code here
+	RequestGenerator.instance()->groupProjects(groupName.GetString());
+}
+
+
+void CclientDlg::projectAddCompleted()
+{
+	RequestGenerator.instance()->addProject(dialog->task.GetString(), dialog->subject.GetString(), dialog->dueTo.GetString(), dialog->completeness.GetString(), dialog->lecturer.GetString(), dialog->student.GetString());
+
+	dialog->EndDialog(0);
 }

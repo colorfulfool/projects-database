@@ -48,6 +48,12 @@
     <ClInclude Include="..\database-objects\DatabaseObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="projectDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\database-objects\Project.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="client.cpp">
@@ -63,6 +69,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\database-objects\DatabaseObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="projectDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\database-objects\Project.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
