@@ -1,5 +1,6 @@
-#include "StdAfx.h"
 #include "RequestGenerator.h"
+#include "DatabaseObject.h"
+#include "Project.h"
 
 RequestGenerator::RequestGenerator(void)
 {
@@ -20,48 +21,70 @@ RequestGenerator* RequestGenerator::instance()
 	return _instance;
 }
 
-void sendRequest(char method[4], char URI[50], char* body, int bodySize)
+void RequestGenerator::sendRequest(char method[4], char URI[50], char* body, int bodySize)
+{
+	RequestHeader header; //заголовок запроса
+
+	strcpy(header.method, method);
+	strcpy(header.URI, URI);
+	header.bodySize = bodySize;
+
+	printf("%s %s %d", header.method, header.URI, header.bodySize);
+}
+
+void RequestGenerator::groupProjects(LPCWSTR groupName)
+{
+	sendRequest("GET", "/project/group", (char*)groupName, sizeof(groupName));
+}
+
+void RequestGenerator::lecturerProjects(LPCWSTR lenctuerName)
+{
+	sendRequest("GET", "/project/lecturer", (char*)lenctuerName, sizeof(lenctuerName));
+}
+
+void RequestGenerator::allProjects()
+{
+	sendRequest("GET", "/project", NULL, 0);
+}
+
+void RequestGenerator::addProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)
+{
+	Project *newOne = new Project(); //добавляемый в базу курсовой
+
+	wcscpy(newOne->task, task);
+	wcscpy(newOne->subject, subject);
+	wcscpy(newOne->dueTo, dueTo);
+	newOne->completeness = completeness;
+	wcscpy(newOne->lecturer, lecturer);
+
+	sendRequest("POST", "/project", (char*)newOne, sizeof(Project));
+}
+
+void RequestGenerator::addLecturer(LPCWSTR fullName)
 {
 
 }
 
-void groupProjects(LPCWSTR groupName)
-{
-	sendRequest("GET", "/projects/group", (char*)groupName, sizeof(groupName));
-}
-
-void lecturerProjects(LPCWSTR lenctuerName)
-{
-	sendRequest("GET", "/projects/lecturer", (char*)lenctuerName, sizeof(lenctuerName));
-}
-
-void allProjects()
-{
-	sendRequest("GET", "/projects", NULL, 0);
-}
-
-void addProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)
+void RequestGenerator::addStudent(LPCWSTR fullName, LPCWSTR group)
 {
 
 }
 
-void addLecturer(LPCWSTR fullName)
+void RequestGenerator::editProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)
 {
+	Project *newOne = new Project();
 
+	wcscpy(newOne->task, task);
+	wcscpy(newOne->subject, subject);
+	wcscpy(newOne->dueTo, dueTo);
+	newOne->completeness = completeness;
+	wcscpy(newOne->lecturer, lecturer);
+
+	sendRequest("PUT", "/project", (char*)newOne, sizeof(Project));
 }
 
-void addStudent(LPCWSTR fullName, LPCWSTR group)
+void RequestGenerator::removeProject(int id)
 {
-
-}
-
-void editProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)
-{
-
-}
-
-void removeProject(int id)
-{
-
+	sendRequest("DELETE", "/project", (char*)id, sizeof(int));
 }
 

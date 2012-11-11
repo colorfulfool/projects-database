@@ -1,4 +1,8 @@
 #pragma once
+#include <afxwin.h>         // MFC core and standard components
+#include <afxext.h>         // MFC extensions
+
+#include <afxdisp.h>        // MFC Automation classes
 
 #include "RequestGenerator.h"
 #include "projectDialog.h"
@@ -42,7 +46,7 @@ private:
 	CString lecturerName;
 	CString groupName;
 
-	CDialogEx *dialog;
+	projectDialog *dialog;
 public:
 	afx_msg void projectAddCompleted();
 };

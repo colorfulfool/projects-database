@@ -1,10 +1,6 @@
-
-// client.cpp : ќпредел€ет поведение классов дл€ приложени€.
-//
-
-#include "stdafx.h"
 #include "client.h"
 #include "clientDlg.h"
+#include <afxshellmanager.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

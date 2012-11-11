@@ -2,10 +2,10 @@
 // clientDlg.cpp : файл реализации
 //
 
-#include "stdafx.h"
 #include "client.h"
 #include "clientDlg.h"
 #include "afxdialogex.h"
+#include "RequestGenerator.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -96,24 +96,28 @@ HCURSOR CclientDlg::OnQueryDragIcon()
 
 void CclientDlg::lecturerProjectsRequested()
 {
-	RequestGenerator.instance()->lecturerProjects(lecturerName.GetString());
+	UpdateData(TRUE);
+	RequestGenerator::instance()->lecturerProjects(lecturerName.GetString());
 }
 
 
 void CclientDlg::groupProjectsRequested()
 {
-	RequestGenerator.instance()->groupProjects(groupName.GetString());
+	UpdateData(TRUE);
+	RequestGenerator::instance()->groupProjects(groupName.GetString());
 }
 
 
 void CclientDlg::allProjectsRequested()
 {
-	RequestGenerator.instance()->allProjects();
+	UpdateData(TRUE);
+	RequestGenerator::instance()->allProjects();
 }
 
 
 void CclientDlg::projectAddRequested()
 {
+	UpdateData(TRUE);
 	dialog = new projectDialog();
 	dialog->DoModal();
 }
@@ -121,43 +125,50 @@ void CclientDlg::projectAddRequested()
 
 void CclientDlg::projectUpdateRequested()
 {
+	UpdateData(TRUE);
 	// TODO: Add your control notification handler code here
 }
 
 
 void CclientDlg::projectRemoveRequested()
 {
+	UpdateData(TRUE);
 	// TODO: Add your control notification handler code here
 }
 
 
 void CclientDlg::studentAddRequested()
 {
+	UpdateData(TRUE);
 	// TODO: Add your command handler code here
 }
 
 
 void CclientDlg::lecturerAddRequested()
 {
+	UpdateData(TRUE);
 	// TODO: Add your command handler code here
 }
 
 
 void CclientDlg::fullReportRequested()
 {
-	RequestGenerator.instance()->allProjects();
+	UpdateData(TRUE);
+	RequestGenerator::instance()->allProjects();
 }
 
 
 void CclientDlg::diagramRequested()
 {
-	RequestGenerator.instance()->groupProjects(groupName.GetString());
+	UpdateData(TRUE);
+	RequestGenerator::instance()->groupProjects(groupName.GetString());
 }
 
 
 void CclientDlg::projectAddCompleted()
 {
-	RequestGenerator.instance()->addProject(dialog->task.GetString(), dialog->subject.GetString(), dialog->dueTo.GetString(), dialog->completeness.GetString(), dialog->lecturer.GetString(), dialog->student.GetString());
+	UpdateData(TRUE);
+	RequestGenerator::instance()->addProject(dialog->task.GetString(), dialog->subject.GetString(), dialog->dueTo.GetString(), dialog->completeness, dialog->lecturer.GetString(), dialog->student.GetString());
 
 	dialog->EndDialog(0);
 }

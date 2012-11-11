@@ -1,13 +1,15 @@
+#pragma once
 
+#include <Windows.h>
 
-class DatabaseObject
+class DatabaseObject //представл€ет запись из базы данных в виде объекта
 {
 public:
 	DatabaseObject();
 	~DatabaseObject();
 
-	virtual char* getUpdateSQL();
-	virtual char* getDeleteSQL();
+	virtual LPWSTR getUpdateSQL(); //возвращает SQL-запрос, добавл€ющий объект в базу
+	virtual LPWSTR getDeleteSQL();
 private:
 	int id; //первичный ключ объекта в его таблице
-}
+};
