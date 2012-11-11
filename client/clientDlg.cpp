@@ -117,7 +117,6 @@ void CclientDlg::allProjectsRequested()
 
 void CclientDlg::projectAddRequested()
 {
-	UpdateData(TRUE);
 	dialog = new projectDialog();
 	dialog->DoModal();
 }

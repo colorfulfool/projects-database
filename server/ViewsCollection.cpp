@@ -18,3 +18,8 @@ ViewsCollection* ViewsCollection::instance()
 	}
 	return _instance;
 }
+
+std::vector<DatabaseObject>* ViewsCollection::allProjects(char method[6], char* requestBody)
+{
+	
+}

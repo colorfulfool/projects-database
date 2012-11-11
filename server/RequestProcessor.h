@@ -1,6 +1,7 @@
 #pragma once
 
 #include "..\ProtocolSpecification.h"
+#include "ViewsCollection.h"
 
 class RequestProcessor
 {
@@ -12,5 +13,10 @@ protected:
 	RequestProcessor();
 private:
 	static RequestProcessor* _instance;
+	typedef std::vector<DatabaseObject>* (*viewFunction) (char*, char*);
+
+	void displatchRequest(RequestHeader *header, char* body); //выбирает соответствующее представление
+	void responseDecorator(viewFunction view, RequestHeader *header, char* body); //использует представдение и формирует ответ сервера
+	void sendResponse(ResponseHeader *header, char* body); //отправляет ответ клиенту
 };
 

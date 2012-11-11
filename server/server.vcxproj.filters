@@ -36,6 +36,9 @@
     <ClInclude Include="..\database-objects\DatabaseObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\database-objects\Project.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -55,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="..\database-objects\DatabaseObject.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\database-objects\Project.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
