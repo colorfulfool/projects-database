@@ -117,6 +117,11 @@ void CclientDlg::allProjectsRequested()
 
 void CclientDlg::projectAddRequested()
 {
+	LPCWSTR test = L"Ляляляля";
+	char result[20];
+	wcstombs(result, test, 20);
+	WideCharToMultiByte(CP_UTF8, NULL, test, 8, result, 20, NULL, NULL); 
+
 	dialog = new projectDialog();
 	dialog->DoModal();
 }

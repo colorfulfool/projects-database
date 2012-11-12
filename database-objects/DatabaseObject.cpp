@@ -18,3 +18,13 @@ LPWSTR DatabaseObject::getDeleteSQL()
 {
 	return L"Not implemented";
 }
+
+void DatabaseObject::fillFromData(sql::ResultSet *data)
+{
+
+}
+
+DatabaseObject* DatabaseObject::createSameObject()
+{
+	return NULL;
+}

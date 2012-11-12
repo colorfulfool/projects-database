@@ -21,5 +21,5 @@ ViewsCollection* ViewsCollection::instance()
 
 std::vector<DatabaseObject>* ViewsCollection::allProjects(char* method, char* requestBody)
 {
-	
+	return 0;
 }
