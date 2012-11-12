@@ -10,6 +10,9 @@ public:
 
 	virtual LPWSTR getUpdateSQL(); //возвращает SQL-запрос, добавл€ющий объект в базу
 	virtual LPWSTR getDeleteSQL();
-private:
+
 	int id; //первичный ключ объекта в его таблице
+	char table[50]; //название таблицы
+private:
+	
 };
