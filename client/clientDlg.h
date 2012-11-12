@@ -42,6 +42,8 @@ public:
 	afx_msg void lecturerAddRequested();
 	afx_msg void fullReportRequested();
 	afx_msg void diagramRequested();
+
+	void showError(WCHAR *message);
 private:
 	CString lecturerName;
 	CString groupName;

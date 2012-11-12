@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string>
 #include <windows.h>
+#include "clientDlg.h"
 
 #include "..\ProtocolSpecification.h"
 
@@ -12,7 +13,8 @@ public:
 
 	static RequestGenerator* instance();
 
-	void sendRequest(char method[4], char URI[50], char* body, int bodySize);
+	int connectToServer(char *address, int port);
+	char* sendRequest(char method[4], char URI[50], char* body, int bodySize);
 
 	void groupProjects(LPCWSTR groupName);
 	void lecturerProjects(LPCWSTR lenctuerName);
@@ -26,5 +28,10 @@ protected:
 	RequestGenerator(void);
 private:
 	static RequestGenerator* _instance;
+
+	int socket_id;
+	sockaddr_in server_address;
+
+	CclientDlg *mainForm;
 };
 

@@ -171,3 +171,8 @@ void CclientDlg::projectAddCompleted()
 
 	dialog->EndDialog(0);
 }
+
+void CclientDlg::showError(WCHAR *message)
+{
+	this->MessageBox((LPCTSTR)message, L"Ошибка", MB_ICONERROR);
+}

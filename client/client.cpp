@@ -6,46 +6,23 @@
 #define new DEBUG_NEW
 #endif
 
-
-// CclientApp
-
 BEGIN_MESSAGE_MAP(CclientApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
-
-// создание CclientApp
-
 CclientApp::CclientApp()
 {
-	// TODO: добавьте код создани€,
-	// –азмещает весь важный код инициализации в InitInstance
+	
 }
 
-
-// ≈динственный объект CclientApp
-
 CclientApp theApp;
-
-
-// инициализаци€ CclientApp
 
 BOOL CclientApp::InitInstance()
 {
 	CWinApp::InitInstance();
 
-
-	// —оздать диспетчер оболочки, в случае, если диалоговое окно содержит
-	// представление дерева оболочки или какие-либо его элементы управлени€.
 	CShellManager *pShellManager = new CShellManager;
 
-	// —тандартна€ инициализаци€
-	// ≈сли эти возможности не используютс€ и необходимо уменьшить размер
-	// конечного исполн€емого файла, необходимо удалить из следующих
-	// конкретных процедур инициализации, которые не требуютс€
-	// »змените раздел реестра, в котором хран€тс€ параметры
-	// TODO: следует изменить эту строку на что-нибудь подход€щее,
-	// например на название организации
 	SetRegistryKey(_T("Ћокальные приложени€, созданные с помощью мастера приложений"));
 
 	CclientDlg dlg;
