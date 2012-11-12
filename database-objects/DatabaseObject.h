@@ -12,6 +12,7 @@ public:
 	virtual void fillFromData(sql::ResultSet *data); //заполн€ет пол€ объекта на основе данных из базы
 	virtual LPWSTR getUpdateSQL(); //возвращает SQL-запрос, добавл€ющий объект в базу
 	virtual LPWSTR getDeleteSQL();
+	virtual LPWSTR getSelectObjectSQL();
 
 	virtual DatabaseObject* createSameObject(); //фабричный метод, возвращает объект того же типа
 

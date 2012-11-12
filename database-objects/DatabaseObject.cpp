@@ -28,3 +28,8 @@ DatabaseObject* DatabaseObject::createSameObject()
 {
 	return NULL;
 }
+
+LPWSTR DatabaseObject::getSelectObjectSQL()
+{
+	return L"Not implemented";
+}

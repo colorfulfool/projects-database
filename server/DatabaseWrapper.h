@@ -17,6 +17,7 @@ public:
 	static DatabaseWrapper* instance();
 
 	void connectToDatabase();
+	void recreateDatabase(); //создает структуру базы данных
 
 	std::vector<DatabaseObject>* getObjects(DatabaseObject *object); //возвращает все объекты указанного типа
 	std::vector<DatabaseObject>* getObjectsByAttribute(DatabaseObject *object, LPCWSTR attribute, LPCWSTR value); //возращает объекты указанного типа, имеющие указанное значение атрибута
@@ -33,5 +34,6 @@ private:
 	sql::ResultSet  *res;
 
 	WCHAR sqlQuery[100];
+	char sqlQueryEncoded[100];
 };
 
