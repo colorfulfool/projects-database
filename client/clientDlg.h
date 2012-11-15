@@ -3,7 +3,11 @@
 #include <afxext.h>         // MFC extensions
 
 #include <afxdisp.h>        // MFC Automation classes
+#include <vector>
 
+#include "resource.h"
+
+#include "Project.h"
 #include "RequestGenerator.h"
 #include "projectDialog.h"
 
@@ -44,6 +48,7 @@ public:
 	afx_msg void diagramRequested();
 
 	void showError(WCHAR *message);
+	void displayProjects(std::vector<Project> *list);
 private:
 	CString lecturerName;
 	CString groupName;
@@ -51,4 +56,11 @@ private:
 	projectDialog *dialog;
 public:
 	afx_msg void projectAddCompleted();
+private:
+	CString connectionStateEdit;
+public:
+	afx_msg void serverConnectRequested();
+private:
+	CString addressEdit;
+	CString portEdit;
 };

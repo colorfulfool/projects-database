@@ -19,6 +19,8 @@ RequestProcessor::RequestProcessor(void)
 	bind(listening_socket, (struct sockaddr *)&server_address, sizeof(server_address));
 
 	listen(listening_socket, SOMAXCONN);
+
+	printf("Serving requests at %s:%d...\n", inet_ntoa(server_address.sin_addr), PORT);
 }
 
 RequestProcessor::~RequestProcessor(void)
@@ -96,4 +98,6 @@ int RequestProcessor::mainLoopIteration()
 			break;
 		}
 	}
+
+	return 0;
 }

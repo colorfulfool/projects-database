@@ -15,6 +15,9 @@ CclientDlg::CclientDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CclientDlg::IDD, pParent)
 	, lecturerName(_T(""))
 	, groupName(_T(""))
+	, connectionStateEdit(_T(""))
+	, addressEdit(_T(""))
+	, portEdit(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -24,6 +27,8 @@ void CclientDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, lecturerEdit, lecturerName);
 	DDX_Text(pDX, groupEdit, groupName);
+	DDX_Text(pDX, duna, connectionStateEdit);
+	DDX_Text(pDX, IDC_EDIT1, addressEdit);
 }
 
 BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
@@ -40,6 +45,7 @@ BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
 	ON_COMMAND(ID_32774, &CclientDlg::fullReportRequested)
 	ON_COMMAND(ID_32775, &CclientDlg::diagramRequested)
 	ON_BN_CLICKED(sendButton, &CclientDlg::projectAddCompleted)
+	ON_BN_CLICKED(IDC_BUTTON7, &CclientDlg::serverConnectRequested)
 END_MESSAGE_MAP()
 
 
@@ -49,13 +55,17 @@ BOOL CclientDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
+	//addressEdit.SetString(L"127.0.0.1");
+
 	// Задает значок для этого диалогового окна. Среда делает это автоматически,
 	//  если главное окно приложения не является диалоговым
-	SetIcon(m_hIcon, TRUE);			// Крупный значок
-	SetIcon(m_hIcon, FALSE);		// Мелкий значок
+	//SetIcon(m_hIcon, TRUE);			// Крупный значок
+	//SetIcon(m_hIcon, FALSE);		// Мелкий значок
 
 	mainMenu.LoadMenuW(IDR_MENU1);
 	SetMenu(&mainMenu);
+
+	//addressEdit.SetString(L"127.0.0.1");
 
 	return TRUE;  // возврат значения TRUE, если фокус не передан элементу управления
 }
@@ -160,6 +170,9 @@ void CclientDlg::fullReportRequested()
 void CclientDlg::diagramRequested()
 {
 	UpdateData(TRUE);
+
+	if (groupName.IsEmpty()) this->MessageBox(L"Укажите группу, по данным которой нужно строить диаграмму, в соответствующем поле.");
+
 	RequestGenerator::instance()->groupProjects(groupName.GetString());
 }
 
@@ -175,4 +188,27 @@ void CclientDlg::projectAddCompleted()
 void CclientDlg::showError(WCHAR *message)
 {
 	this->MessageBox((LPCTSTR)message, L"Ошибка", MB_ICONERROR);
+}
+
+void CclientDlg::displayProjects(std::vector<Project> *list)
+{
+	
+}
+
+
+void CclientDlg::serverConnectRequested()
+{
+	char addressDecoded[50];
+
+	UpdateData(TRUE);
+	wcstombs(addressDecoded, addressEdit.GetString(), 50);
+	//wcstombs(portDecoded, portEdit.GetString(), 6);
+
+	if (strlen(addressDecoded) == 0) strcpy(addressDecoded, "127.0.0.1");
+	
+	if (RequestGenerator::instance()->connectToServer(addressDecoded, 1234) == 0)
+	{
+		connectionStateEdit.SetString(L"На данный момент: подключен");
+		UpdateData(TRUE);
+	}
 }

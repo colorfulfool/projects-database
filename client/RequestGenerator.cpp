@@ -5,6 +5,10 @@
 RequestGenerator::RequestGenerator(void)
 {
 	socket_id = socket(AF_INET, SOCK_STREAM, 0);
+	if (socket_id < 0)
+	{
+		mainForm->MessageBox(L"Ќе удалось создать сокет.");
+	}
 }
 
 int RequestGenerator::connectToServer(char *address, int port)
@@ -14,7 +18,13 @@ int RequestGenerator::connectToServer(char *address, int port)
 	server_address.sin_port = htons(port);
 	server_address.sin_addr.s_addr = inet_addr(address);
 
-	return connect(socket_id, (const sockaddr*)&server_address, sizeof(struct sockaddr_in));
+	int returned = connect(socket_id, (const sockaddr*)&server_address, sizeof(struct sockaddr_in));
+	if (returned != 0)
+	{
+		mainForm->MessageBox(L"Ќе удалось подключитьс€.");
+	}
+
+	return returned;
 }
 
 RequestGenerator::~RequestGenerator(void)
@@ -32,7 +42,7 @@ RequestGenerator* RequestGenerator::instance()
 	return _instance;
 }
 
-char* RequestGenerator::sendRequest(char method[4], char URI[50], char* body, int bodySize)
+ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* body, int bodySize)
 {
 	RequestHeader *header = new RequestHeader; //заголовок запроса
 
@@ -48,21 +58,27 @@ char* RequestGenerator::sendRequest(char method[4], char URI[50], char* body, in
 	ResponseHeader *response = new ResponseHeader;
 	recv(socket_id, (char*)response, sizeof(RequestHeader), NULL); //принимаю заголовок ответа
 
-	char *body = (char*)malloc(response->bodySize);
-	recv(socket_id, (char*)body, response->bodySize, NULL);
+	char *responseBody = (char*)malloc(response->bodySize);
+	recv(socket_id, (char*)responseBody, response->bodySize, NULL);
 
 	if (strcpy(response->status, "OK"))
 	{
-		return body;
+		ResponseBody resp;
+		resp.body = responseBody;
+		resp.size = response->bodySize;
+
+		return resp;
 	} else if (strcpy(response->status, "FAIL")) //если произошла ошибка
 	{
 		WCHAR *messageEncoded = (WCHAR*)calloc(response->bodySize, sizeof(WCHAR));
-		mbstowcs(messageEncoded, body, response->bodySize);
+		mbstowcs(messageEncoded, responseBody, response->bodySize);
 		mainForm->showError(messageEncoded); //показываю сообщение об этом
-		return NULL;
+		
+		return ResponseBody(); //нуждаетс€ а проверке
 	} else {
 		mainForm->showError(L"Ќепон€тный ответ сервера.");
-		return NULL;
+		
+		return ResponseBody();
 	}
 }
 
@@ -78,12 +94,15 @@ void RequestGenerator::lecturerProjects(LPCWSTR lenctuerName)
 
 void RequestGenerator::allProjects()
 {
-	char *result = sendRequest("GET", "/project", NULL, 0);
+	ResponseBody result = sendRequest("GET", "/project", NULL, 0);
 
-	if (result != NULL)
-	{
+	//if (result != NULL)
+	//{
+		std::vector<Project> *objects = new std::vector<Project>;
+		objects->assign(result.body, result.body + result.size);
 
-	}
+		mainForm->displayProjects(objects);
+	//}
 }
 
 void RequestGenerator::addProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)
