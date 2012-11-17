@@ -22,5 +22,5 @@ ObjectsContainer* ViewsCollection::groupProjects(char method[6], char* requestBo
 
 ObjectsContainer* ViewsCollection::lecturerProjects(char method[6], char* requestBody)
 {
-	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"student", (LPCWSTR)requestBody);
+	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"student_group", (LPCWSTR)requestBody);
 }

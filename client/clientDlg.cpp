@@ -205,17 +205,27 @@ void CclientDlg::showError(WCHAR *message)
 void CclientDlg::displayProjects(ObjectsContainer *list)
 {
 	int row=0;
+	Project *object;
+	WCHAR numbersTemp[5];
+
 	while (list->next())
 	{
-		Project *object = (Project*)list->current();
-		int newRow = table.InsertItem(row, _itow(object->id, NULL, 10));
+		object = (Project*)list->current();
+
+		swprintf(numbersTemp, L"%d", object->id);
+		int newRow = table.InsertItem(row, L"fuck");
 		table.SetItemText(newRow, 1, object->task);
 		table.SetItemText(newRow, 1, object->subject);
-		//table.SetItemText(newRow, 1, object->completeness);
+		swprintf(numbersTemp, L"%d", object->completeness);
+		//table.SetItemText(newRow, 1, numbersTemp);
 		table.SetItemText(newRow, 1, object->dueTo);
 		//table.SetItemText(newRow, 1, object->lecturer);
 		//table.SetItemText(newRow, 1, object->student);
+
+		row++;
 	}
+
+	UpdateData(FALSE);
 }
 
 

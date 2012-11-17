@@ -92,7 +92,7 @@ void RequestGenerator::groupProjects(LPCWSTR groupName)
 
 	if (result.size != 0)
 	{
-		ObjectsContainer *objects = new ObjectsContainer(new Project());
+		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
 		objects->setDataPointer(result.body);
 
 		mainForm->displayProjects(objects);
@@ -105,7 +105,7 @@ void RequestGenerator::lecturerProjects(LPCWSTR lenctuerName)
 
 	if (result.size != 0)
 	{
-		ObjectsContainer *objects = new ObjectsContainer(new Project());
+		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
 		objects->setDataPointer(result.body);
 
 		mainForm->displayProjects(objects);
@@ -118,7 +118,7 @@ void RequestGenerator::allProjects()
 
 	if (result.size != 0)
 	{
-		ObjectsContainer *objects = new ObjectsContainer(new Project());
+		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
 		objects->setDataPointer(result.body);
 
 		mainForm->displayProjects(objects);
