@@ -42,6 +42,9 @@
     <ClInclude Include="..\database-objects\sqlstring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\database-objects\ObjectsContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -64,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="..\database-objects\Project.cpp">
       <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\database-objects\ObjectsContainer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

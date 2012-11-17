@@ -1,12 +1,14 @@
 #include "RequestGenerator.h"
 #include "DatabaseObject.h"
 #include "Project.h"
+#include "ObjectsContainer.h"
 
 RequestGenerator::RequestGenerator(void)
 {
 	socket_id = socket(AF_INET, SOCK_STREAM, 0);
-	if (socket_id < 0)
+	if (socket_id == INVALID_SOCKET)
 	{
+		int error = WSAGetLastError();
 		mainForm->MessageBox(L"Не удалось создать сокет.");
 	}
 }
@@ -50,7 +52,7 @@ ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* b
 	strcpy(header->URI, URI);
 	header->bodySize = bodySize;
 
-	send(socket_id, (char*)&header, sizeof(RequestHeader), NULL);
+	send(socket_id, (char*)header, sizeof(RequestHeader), NULL);
 	send(socket_id, body, bodySize, NULL);
 
 	//тем временем сервер обраротал запрос
@@ -61,9 +63,9 @@ ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* b
 	char *responseBody = (char*)malloc(response->bodySize);
 	recv(socket_id, (char*)responseBody, response->bodySize, NULL);
 
+	ResponseBody resp;
 	if (strcpy(response->status, "OK"))
 	{
-		ResponseBody resp;
 		resp.body = responseBody;
 		resp.size = response->bodySize;
 
@@ -74,35 +76,53 @@ ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* b
 		mbstowcs(messageEncoded, responseBody, response->bodySize);
 		mainForm->showError(messageEncoded); //показываю сообщение об этом
 		
-		return ResponseBody(); //нуждается а проверке
+		resp.size = 0;
+		return resp; //нуждается а проверке
 	} else {
 		mainForm->showError(L"Непонятный ответ сервера.");
 		
-		return ResponseBody();
+		resp.size = 0;
+		return resp;
 	}
 }
 
 void RequestGenerator::groupProjects(LPCWSTR groupName)
 {
-	sendRequest("GET", "/project/group", (char*)groupName, sizeof(groupName));
+	ResponseBody result = sendRequest("GET", "/project/group", (char*)groupName, sizeof(groupName));
+
+	if (result.size != 0)
+	{
+		ObjectsContainer *objects = new ObjectsContainer(new Project());
+		objects->setDataPointer(result.body);
+
+		mainForm->displayProjects(objects);
+	}
 }
 
 void RequestGenerator::lecturerProjects(LPCWSTR lenctuerName)
 {
-	sendRequest("GET", "/project/lecturer", (char*)lenctuerName, sizeof(lenctuerName));
+	ResponseBody result = sendRequest("GET", "/project/lecturer", (char*)lenctuerName, sizeof(lenctuerName));
+
+	if (result.size != 0)
+	{
+		ObjectsContainer *objects = new ObjectsContainer(new Project());
+		objects->setDataPointer(result.body);
+
+		mainForm->displayProjects(objects);
+	}
 }
 
 void RequestGenerator::allProjects()
 {
 	ResponseBody result = sendRequest("GET", "/project", NULL, 0);
 
-	//if (result != NULL)
-	//{
-		std::vector<Project> *objects = new std::vector<Project>;
-		objects->assign(result.body, result.body + result.size);
+	if (result.size != 0)
+	{
+		ObjectsContainer *objects = new ObjectsContainer(new Project());
+		objects->setDataPointer(result.body);
 
 		mainForm->displayProjects(objects);
-	//}
+	}
 }
 
 void RequestGenerator::addProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)

@@ -10,6 +10,8 @@
 #include "Project.h"
 #include "RequestGenerator.h"
 #include "projectDialog.h"
+#include "ObjectsContainer.h"
+#include "afxcmn.h"
 
 // диалоговое окно CclientDlg
 class CclientDlg : public CDialogEx
@@ -48,7 +50,7 @@ public:
 	afx_msg void diagramRequested();
 
 	void showError(WCHAR *message);
-	void displayProjects(std::vector<Project> *list);
+	void displayProjects(ObjectsContainer *list);
 private:
 	CString lecturerName;
 	CString groupName;
@@ -63,4 +65,5 @@ public:
 private:
 	CString addressEdit;
 	CString portEdit;
+	CListCtrl table;
 };

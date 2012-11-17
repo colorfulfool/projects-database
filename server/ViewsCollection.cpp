@@ -1,4 +1,6 @@
 #include "ViewsCollection.h"
+#include "DatabaseWrapper.h"
+#include "Project.h"
 
 ViewsCollection::ViewsCollection(void)
 {
@@ -8,18 +10,17 @@ ViewsCollection::~ViewsCollection(void)
 {
 }
 
-ViewsCollection* ViewsCollection::_instance = 0;
-
-ViewsCollection* ViewsCollection::instance()
+ObjectsContainer* ViewsCollection::allProjects(char* method, char* requestBody)
 {
-	if (_instance == 0)
-	{
-		_instance = new ViewsCollection();
-	}
-	return _instance;
+	return DatabaseWrapper::instance()->getObjects(new Project());
 }
 
-std::vector<DatabaseObject>* ViewsCollection::allProjects(char* method, char* requestBody)
+ObjectsContainer* ViewsCollection::groupProjects(char method[6], char* requestBody)
 {
-	return 0;
+	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"lecturer", (LPCWSTR)requestBody);
+}
+
+ObjectsContainer* ViewsCollection::lecturerProjects(char method[6], char* requestBody)
+{
+	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"student", (LPCWSTR)requestBody);
 }

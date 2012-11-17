@@ -108,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)database-objects\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)database-objects\;$(SolutionDir)..\Ultimate Grid\Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -179,12 +179,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="ReadMe.txt" />
     <None Include="res\client.ico" />
     <None Include="res\client.rc2" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\database-objects\DatabaseObject.h" />
+    <ClInclude Include="..\database-objects\ObjectsContainer.h" />
     <ClInclude Include="..\database-objects\Project.h" />
     <ClInclude Include="..\ProtocolSpecification.h" />
     <ClInclude Include="client.h" />
@@ -196,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\database-objects\DatabaseObject.cpp" />
+    <ClCompile Include="..\database-objects\ObjectsContainer.cpp" />
     <ClCompile Include="..\database-objects\Project.cpp" />
     <ClCompile Include="client.cpp" />
     <ClCompile Include="clientDlg.cpp" />

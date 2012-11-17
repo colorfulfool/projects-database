@@ -23,7 +23,8 @@ BOOL CclientApp::InitInstance()
 
 	CShellManager *pShellManager = new CShellManager;
 
-	SetRegistryKey(_T("Локальные приложения, созданные с помощью мастера приложений"));
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(1, 0), &wsaData);
 
 	CclientDlg dlg;
 	m_pMainWnd = &dlg;

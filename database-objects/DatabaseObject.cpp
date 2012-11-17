@@ -29,6 +29,11 @@ DatabaseObject* DatabaseObject::createSameObject()
 	return NULL;
 }
 
+int DatabaseObject::sizeOfSelf()
+{
+	return sizeof(DatabaseObject);
+}
+
 LPWSTR DatabaseObject::getSelectObjectSQL()
 {
 	return L"Not implemented";

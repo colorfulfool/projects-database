@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "DatabaseObject.h"
+#include "ObjectsContainer.h"
 
 class DatabaseWrapper
 {
@@ -19,9 +20,9 @@ public:
 	void connectToDatabase();
 	void recreateDatabase(); //создает структуру базы данных
 
-	std::vector<DatabaseObject>* getObjects(DatabaseObject *object); //возвращает все объекты указанного типа
-	std::vector<DatabaseObject>* getObjectsByAttribute(DatabaseObject *object, LPCWSTR attribute, LPCWSTR value); //возращает объекты указанного типа, имеющие указанное значение атрибута
-	//RET addObject(DatabaseObject *object);
+	ObjectsContainer* getObjects(DatabaseObject *object); //возвращает все объекты указанного типа
+	ObjectsContainer* getObjectsByAttribute(DatabaseObject *object, LPCWSTR attribute, LPCWSTR value); //возращает объекты указанного типа, имеющие указанное значение атрибута
+	void addObject(DatabaseObject *object);
 	void updateObject(DatabaseObject *object);
 	void deleteObject(DatabaseObject *object);
 protected:
@@ -35,5 +36,7 @@ private:
 
 	WCHAR sqlQuery[100];
 	char sqlQueryEncoded[100];
+
+	ObjectsContainer* gatherQuriedObjects(DatabaseObject *type); //собирает результаты запроса в контейнер в виде объектов
 };
 

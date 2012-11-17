@@ -3,6 +3,8 @@
 #include <cppconn\exception.h>
 using namespace std;
 
+
+
 #define PORT 1234
 
 RequestProcessor::RequestProcessor(void)
@@ -44,12 +46,14 @@ void RequestProcessor::displatchRequest(RequestHeader *header, char* body)
 	
 	printf("%s %s -> ", header->method, header->URI);
 
-	if (strcmp(usecase, "projects/")==0) responseDecorator(ViewsCollection::allProjects, header, body);
+	if (strcmp(usecase, "/project")==0) responseDecorator(ViewsCollection::allProjects, header, body);
+	if (strcmp(usecase, "/project/lecturer")==0) responseDecorator(ViewsCollection::lecturerProjects, header, body);
+	if (strcmp(usecase, "/project/student")==0) responseDecorator(ViewsCollection::groupProjects, header, body);
 }
 
 void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *header, char* body)
 {
-	std::vector<DatabaseObject> *responseBody;
+	ObjectsContainer *responseBody;
 	ResponseHeader *response = new ResponseHeader();
 	strcpy(response->URI, header->URI);
 
@@ -58,9 +62,9 @@ void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *heade
 		responseBody = view(header->method, body);
 
 		strcpy(response->status, "OK");
-		response->bodySize = sizeof(responseBody->data());
+		response->bodySize = responseBody->totalSize();
 
-		sendResponse(response, (char*)responseBody->data());
+		sendResponse(response, responseBody->dataPointer());
 	} catch (sql::SQLException &error) {
 		strcpy(response->status, "FAIL");
 		response->bodySize = strlen(error.what());
@@ -82,7 +86,7 @@ int RequestProcessor::mainLoopIteration()
 	int size_of_address = sizeof(struct sockaddr_in);
 	working_socket = accept(listening_socket, (struct sockaddr *)&client_address, &size_of_address);
 
-	printf("Client %s\n connected.", inet_ntoa(client_address.sin_addr));
+	printf("Client %s connected.\n", inet_ntoa(client_address.sin_addr));
 
 	//тут можно форкнуть
 	while (1)
@@ -90,8 +94,14 @@ int RequestProcessor::mainLoopIteration()
 		RequestHeader *header = new RequestHeader();
 		if (recv(working_socket, (char*)header, sizeof(RequestHeader), NULL) > 0) //принимаю заголовок
 		{
-			char *body = (char*)malloc(header->bodySize);
-			recv(working_socket, body, header->bodySize, NULL); //принимаю тело запроса
+			char *body;
+			if (header->bodySize > 0)
+			{
+				body = (char*)malloc(header->bodySize);
+				recv(working_socket, body, header->bodySize, NULL); //принимаю тело запроса
+			} else {
+				body = 0;
+			}
 
 			displatchRequest(header, body);
 		} else {

@@ -28,22 +28,34 @@ void DatabaseWrapper::connectToDatabase()
 	stmt->execute("USE `projects-database`");
 }
 
-std::vector<DatabaseObject>* DatabaseWrapper::getObjects(DatabaseObject *object)
+ObjectsContainer* DatabaseWrapper::getObjects(DatabaseObject *object)
 {
-	WCHAR tableName[50];
-	mbstowcs(tableName, object->table, 50);
-
 	WideCharToMultiByte(CP_UTF8, NULL, object->getSelectObjectSQL(), 100, sqlQueryEncoded, 100, NULL, NULL);
 
+	return gatherQuriedObjects(object);
+}
+
+ObjectsContainer* DatabaseWrapper::getObjectsByAttribute(DatabaseObject *object, LPCWSTR attribute, LPCWSTR value)
+{
+	WCHAR queryCombined[100];
+	swprintf(queryCombined, L"SELECT * FROM (%S) WHERE %S=`%S`", object->getSelectObjectSQL(), attribute, value);
+
+	WideCharToMultiByte(CP_UTF8, NULL, queryCombined, 100, sqlQueryEncoded, 100, NULL, NULL);
+
+	return gatherQuriedObjects(object);
+}
+
+ObjectsContainer* DatabaseWrapper::gatherQuriedObjects(DatabaseObject *type)
+{
 	stmt = con->createStatement();
 	res = stmt->executeQuery(sqlQueryEncoded);
-	
-	std::vector<DatabaseObject>* list = new std::vector<DatabaseObject>();
+
+	ObjectsContainer* list = new ObjectsContainer();
 	while (res->next())
 	{
-		DatabaseObject *newObject = object->createSameObject();
+		DatabaseObject *newObject = type->createSameObject();
 		newObject->fillFromData(res);
-		list->push_back(*newObject);
+		list->append(newObject);
 	}
 
 	return list;

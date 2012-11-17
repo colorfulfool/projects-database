@@ -15,6 +15,7 @@ public:
 	virtual LPWSTR getSelectObjectSQL();
 
 	virtual DatabaseObject* createSameObject(); //фабричный метод, возвращает объект того же типа
+	virtual int sizeOfSelf(); //возвращает размер объекта своего класса
 
 	int id; //первичный ключ объекта в его таблице
 	char table[50]; //название таблицы

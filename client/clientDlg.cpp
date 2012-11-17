@@ -29,6 +29,7 @@ void CclientDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, groupEdit, groupName);
 	DDX_Text(pDX, duna, connectionStateEdit);
 	DDX_Text(pDX, IDC_EDIT1, addressEdit);
+	DDX_Control(pDX, tableEdit, table);
 }
 
 BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
@@ -65,8 +66,19 @@ BOOL CclientDlg::OnInitDialog()
 	mainMenu.LoadMenuW(IDR_MENU1);
 	SetMenu(&mainMenu);
 
-	//addressEdit.SetString(L"127.0.0.1");
+	addressEdit.SetString(L"127.0.0.1");
 
+	table.SetExtendedStyle(LVS_REPORT);
+	table.InsertColumn(0, L"id");
+	table.InsertColumn(1, L"Задание");
+	table.InsertColumn(2, L"Предмет");
+	table.InsertColumn(3, L"Готовность, %");
+	table.InsertColumn(4, L"Срок сдачи");
+	table.InsertColumn(5, L"Преподаватель");
+	table.InsertColumn(6, L"Студент");
+
+	UpdateData(FALSE);
+	
 	return TRUE;  // возврат значения TRUE, если фокус не передан элементу управления
 }
 
@@ -190,9 +202,20 @@ void CclientDlg::showError(WCHAR *message)
 	this->MessageBox((LPCTSTR)message, L"Ошибка", MB_ICONERROR);
 }
 
-void CclientDlg::displayProjects(std::vector<Project> *list)
+void CclientDlg::displayProjects(ObjectsContainer *list)
 {
-	
+	int row=0;
+	while (list->next())
+	{
+		Project *object = (Project*)list->current();
+		int newRow = table.InsertItem(row, _itow(object->id, NULL, 10));
+		table.SetItemText(newRow, 1, object->task);
+		table.SetItemText(newRow, 1, object->subject);
+		//table.SetItemText(newRow, 1, object->completeness);
+		table.SetItemText(newRow, 1, object->dueTo);
+		//table.SetItemText(newRow, 1, object->lecturer);
+		//table.SetItemText(newRow, 1, object->student);
+	}
 }
 
 
@@ -203,12 +226,10 @@ void CclientDlg::serverConnectRequested()
 	UpdateData(TRUE);
 	wcstombs(addressDecoded, addressEdit.GetString(), 50);
 	//wcstombs(portDecoded, portEdit.GetString(), 6);
-
-	if (strlen(addressDecoded) == 0) strcpy(addressDecoded, "127.0.0.1");
 	
 	if (RequestGenerator::instance()->connectToServer(addressDecoded, 1234) == 0)
 	{
 		connectionStateEdit.SetString(L"На данный момент: подключен");
-		UpdateData(TRUE);
+		UpdateData(FALSE);
 	}
 }
