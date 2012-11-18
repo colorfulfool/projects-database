@@ -28,6 +28,9 @@ BOOL CclientApp::InitInstance()
 
 	CclientDlg dlg;
 	m_pMainWnd = &dlg;
+
+	RequestGenerator::instance()->setMainForm(&dlg);
+
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
 	{

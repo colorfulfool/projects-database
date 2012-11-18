@@ -46,9 +46,9 @@ void RequestProcessor::displatchRequest(RequestHeader *header, char* body)
 	
 	printf("%s %s -> ", header->method, header->URI);
 
-	if (strcmp(usecase, "/project")==0) responseDecorator(ViewsCollection::allProjects, header, body);
+	if (strcmp(usecase, "/project")==0) responseDecorator(ViewsCollection::allProjects, header, body); //перебираю представления в поисках подходящего
 	if (strcmp(usecase, "/project/lecturer")==0) responseDecorator(ViewsCollection::lecturerProjects, header, body);
-	if (strcmp(usecase, "/project/student")==0) responseDecorator(ViewsCollection::groupProjects, header, body);
+	if (strcmp(usecase, "/project/group")==0) responseDecorator(ViewsCollection::groupProjects, header, body);
 }
 
 void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *header, char* body)
@@ -67,7 +67,7 @@ void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *heade
 		sendResponse(response, responseBody->dataPointer());
 	} catch (sql::SQLException &error) {
 		strcpy(response->status, "FAIL");
-		response->bodySize = strlen(error.what());
+		response->bodySize = strlen(error.what())+1;
 
 		sendResponse(response, (char*)error.what());
 	}

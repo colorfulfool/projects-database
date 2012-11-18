@@ -61,16 +61,17 @@ ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* b
 	recv(socket_id, (char*)response, sizeof(RequestHeader), NULL); //принимаю заголовок ответа
 
 	char *responseBody = (char*)malloc(response->bodySize);
-	recv(socket_id, (char*)responseBody, response->bodySize, NULL);
+	if (response->bodySize > 0)
+		recv(socket_id, (char*)responseBody, response->bodySize, NULL);
 
 	ResponseBody resp;
-	if (strcpy(response->status, "OK"))
+	if (strcmp(response->status, "OK") == 0)
 	{
 		resp.body = responseBody;
 		resp.size = response->bodySize;
 
 		return resp;
-	} else if (strcpy(response->status, "FAIL")) //если произошла ошибка
+	} else if (strcmp(response->status, "FAIL") == 0) //если произошла ошибка
 	{
 		WCHAR *messageEncoded = (WCHAR*)calloc(response->bodySize, sizeof(WCHAR));
 		mbstowcs(messageEncoded, responseBody, response->bodySize);
@@ -88,7 +89,7 @@ ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* b
 
 void RequestGenerator::groupProjects(LPCWSTR groupName)
 {
-	ResponseBody result = sendRequest("GET", "/project/group", (char*)groupName, sizeof(groupName));
+	ResponseBody result = sendRequest("GET", "/project/group", (char*)groupName, (wcslen(groupName)+1)*sizeof(WCHAR));
 
 	if (result.size != 0)
 	{
@@ -101,7 +102,7 @@ void RequestGenerator::groupProjects(LPCWSTR groupName)
 
 void RequestGenerator::lecturerProjects(LPCWSTR lenctuerName)
 {
-	ResponseBody result = sendRequest("GET", "/project/lecturer", (char*)lenctuerName, sizeof(lenctuerName));
+	ResponseBody result = sendRequest("GET", "/project/lecturer", (char*)lenctuerName, (wcslen(lenctuerName)+1)*sizeof(WCHAR));
 
 	if (result.size != 0)
 	{
@@ -166,3 +167,33 @@ void RequestGenerator::removeProject(int id)
 	sendRequest("DELETE", "/project", (char*)id, sizeof(int));
 }
 
+void RequestGenerator::setMainForm(CclientDlg *dialog)
+{
+	mainForm = dialog;
+}
+
+void RequestGenerator::diagram(LPCWSTR groupName)
+{
+	ResponseBody result = sendRequest("GET", "/project/group", (char*)groupName, (wcslen(groupName)+1)*sizeof(WCHAR));
+
+	if (result.size != 0)
+	{
+		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
+		objects->setDataPointer(result.body);
+
+		mainForm->displayDiagram(objects);
+	}
+}
+
+void RequestGenerator::fullReport()
+{
+	ResponseBody result = sendRequest("GET", "/project", NULL, 0);
+
+	if (result.size != 0)
+	{
+		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
+		objects->setDataPointer(result.body);
+
+		mainForm->saveTextReport(objects);
+	}
+}

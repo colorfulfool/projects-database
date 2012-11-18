@@ -30,17 +30,17 @@ void DatabaseWrapper::connectToDatabase()
 
 ObjectsContainer* DatabaseWrapper::getObjects(DatabaseObject *object)
 {
-	WideCharToMultiByte(CP_UTF8, NULL, object->getSelectObjectSQL(), 100, sqlQueryEncoded, 100, NULL, NULL);
+	WideCharToMultiByte(CP_UTF8, NULL, object->getSelectObjectSQL(), 350, sqlQueryEncoded, 350, NULL, NULL);
 
 	return gatherQuriedObjects(object);
 }
 
 ObjectsContainer* DatabaseWrapper::getObjectsByAttribute(DatabaseObject *object, LPCWSTR attribute, LPCWSTR value)
 {
-	WCHAR queryCombined[100];
-	swprintf(queryCombined, L"SELECT * FROM (%S) WHERE %S=`%S`", object->getSelectObjectSQL(), attribute, value);
+	WCHAR queryCombined[350];
+	swprintf(queryCombined, L"SELECT * FROM (%s) AS result WHERE `%s`='%s'", object->getSelectObjectSQL(), attribute, value);
 
-	WideCharToMultiByte(CP_UTF8, NULL, queryCombined, 100, sqlQueryEncoded, 100, NULL, NULL);
+	WideCharToMultiByte(CP_UTF8, NULL, queryCombined, 350, sqlQueryEncoded, 350, NULL, NULL);
 
 	return gatherQuriedObjects(object);
 }
@@ -66,4 +66,6 @@ void DatabaseWrapper::recreateDatabase()
 	stmt->execute("CREATE TABLE IF NOT EXISTS `lecturer` (`name` varchar(100) NOT NULL, `id` int(10) NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`), UNIQUE KEY `name` (`name`)) DEFAULT CHARSET=utf8");
 	stmt->execute("CREATE TABLE IF NOT EXISTS `student` (`name` varchar(100) NOT NULL, `id` int(10) NOT NULL AUTO_INCREMENT, `group` varchar(50) NOT NULL, PRIMARY KEY (`id`), UNIQUE KEY `name` (`name`)) DEFAULT CHARSET=utf8");
 	stmt->execute("CREATE TABLE IF NOT EXISTS `project` (`task` varchar(100) NOT NULL, `dueTo` date DEFAULT NULL, `id` int(11) NOT NULL, `subject` varchar(50) NOT NULL, `completeness` int(10) unsigned NOT NULL DEFAULT '0', `student_id` int(10) DEFAULT NULL, `lecturer_id` int(10) DEFAULT NULL, PRIMARY KEY (`id`), KEY `student_ref` (`student_id`), KEY `lecturer_ref` (`lecturer_id`), CONSTRAINT `lecturer_ref` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`id`), CONSTRAINT `student_ref` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`)) DEFAULT CHARSET=utf8");
+
+	printf("Database structure has been recreated.");
 }

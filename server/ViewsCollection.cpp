@@ -17,10 +17,10 @@ ObjectsContainer* ViewsCollection::allProjects(char* method, char* requestBody)
 
 ObjectsContainer* ViewsCollection::groupProjects(char method[6], char* requestBody)
 {
-	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"lecturer", (LPCWSTR)requestBody);
+	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"student_group", (LPCWSTR)requestBody);
 }
 
 ObjectsContainer* ViewsCollection::lecturerProjects(char method[6], char* requestBody)
 {
-	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"student_group", (LPCWSTR)requestBody);
+	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"lecturer", (LPCWSTR)requestBody);
 }

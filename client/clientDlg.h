@@ -49,8 +49,10 @@ public:
 	afx_msg void fullReportRequested();
 	afx_msg void diagramRequested();
 
-	void showError(WCHAR *message);
-	void displayProjects(ObjectsContainer *list);
+	afx_msg void showError(WCHAR *message);
+	afx_msg void displayProjects(ObjectsContainer *list);
+	void displayDiagram(ObjectsContainer *list);
+	void saveTextReport(ObjectsContainer *list);
 private:
 	CString lecturerName;
 	CString groupName;

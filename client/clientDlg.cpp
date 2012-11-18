@@ -66,16 +66,23 @@ BOOL CclientDlg::OnInitDialog()
 	mainMenu.LoadMenuW(IDR_MENU1);
 	SetMenu(&mainMenu);
 
+	connectionStateEdit.SetString(L"На данный момент: нет подключения");
 	addressEdit.SetString(L"127.0.0.1");
 
-	table.SetExtendedStyle(LVS_REPORT);
+	table.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 	table.InsertColumn(0, L"id");
 	table.InsertColumn(1, L"Задание");
+	table.SetColumnWidth(1, 150);
 	table.InsertColumn(2, L"Предмет");
+	table.SetColumnWidth(2, 100);
 	table.InsertColumn(3, L"Готовность, %");
+	table.SetColumnWidth(3, 30);
 	table.InsertColumn(4, L"Срок сдачи");
+	table.SetColumnWidth(4, 70);
 	table.InsertColumn(5, L"Преподаватель");
+	table.SetColumnWidth(5, 100);
 	table.InsertColumn(6, L"Студент");
+	table.SetColumnWidth(6, 100);
 
 	UpdateData(FALSE);
 	
@@ -175,7 +182,7 @@ void CclientDlg::lecturerAddRequested()
 void CclientDlg::fullReportRequested()
 {
 	UpdateData(TRUE);
-	RequestGenerator::instance()->allProjects();
+	RequestGenerator::instance()->fullReport();
 }
 
 
@@ -185,7 +192,7 @@ void CclientDlg::diagramRequested()
 
 	if (groupName.IsEmpty()) this->MessageBox(L"Укажите группу, по данным которой нужно строить диаграмму, в соответствующем поле.");
 
-	RequestGenerator::instance()->groupProjects(groupName.GetString());
+	RequestGenerator::instance()->diagram(groupName.GetString());
 }
 
 
@@ -208,19 +215,21 @@ void CclientDlg::displayProjects(ObjectsContainer *list)
 	Project *object;
 	WCHAR numbersTemp[5];
 
+	table.DeleteAllItems();
+
 	while (list->next())
 	{
 		object = (Project*)list->current();
 
 		swprintf(numbersTemp, L"%d", object->id);
-		int newRow = table.InsertItem(row, L"fuck");
+		int newRow = table.InsertItem(row, numbersTemp);
 		table.SetItemText(newRow, 1, object->task);
-		table.SetItemText(newRow, 1, object->subject);
+		table.SetItemText(newRow, 2, object->subject);
 		swprintf(numbersTemp, L"%d", object->completeness);
-		//table.SetItemText(newRow, 1, numbersTemp);
-		table.SetItemText(newRow, 1, object->dueTo);
-		//table.SetItemText(newRow, 1, object->lecturer);
-		//table.SetItemText(newRow, 1, object->student);
+		table.SetItemText(newRow, 3, numbersTemp);
+		table.SetItemText(newRow, 4, object->dueTo);
+		table.SetItemText(newRow, 5, object->lecturer);
+		table.SetItemText(newRow, 6, object->student);
 
 		row++;
 	}
@@ -242,4 +251,28 @@ void CclientDlg::serverConnectRequested()
 		connectionStateEdit.SetString(L"На данный момент: подключен");
 		UpdateData(FALSE);
 	}
+}
+
+void CclientDlg::displayDiagram(ObjectsContainer *list)
+{
+
+}
+
+void CclientDlg::saveTextReport(ObjectsContainer *list)
+{
+	FILE *report = fopen("report.csv", "w, ccs=UTF-8");
+
+	fwprintf(report, L"Задание\tПредмет\tСрок сдачи\tГотовность\tПреподаватель\tСтудент\n");
+
+	Project *object;
+	while (list->next())
+	{
+		object = (Project*)list->current();
+
+		fwprintf(report, L"%s\t%s\t%s\t%d\t%s\t%s\n", object->task, object->subject, object->dueTo, object->completeness, object->lecturer, object->student);
+	}
+
+	fclose(report);
+
+	MessageBox(L"Отчет был сохранен в файл report.csv");
 }
