@@ -147,9 +147,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\database-objects\DatabaseObject.h" />
+    <ClInclude Include="..\database-objects\Lecturer.h" />
     <ClInclude Include="..\database-objects\ObjectsContainer.h" />
     <ClInclude Include="..\database-objects\Project.h" />
     <ClInclude Include="..\database-objects\sqlstring.h" />
+    <ClInclude Include="..\database-objects\Student.h" />
     <ClInclude Include="..\ProtocolSpecification.h" />
     <ClInclude Include="DatabaseWrapper.h" />
     <ClInclude Include="RequestProcessor.h" />
@@ -159,8 +161,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\database-objects\DatabaseObject.cpp" />
+    <ClCompile Include="..\database-objects\Lecturer.cpp" />
     <ClCompile Include="..\database-objects\ObjectsContainer.cpp" />
     <ClCompile Include="..\database-objects\Project.cpp" />
+    <ClCompile Include="..\database-objects\Student.cpp" />
     <ClCompile Include="DatabaseWrapper.cpp" />
     <ClCompile Include="RequestProcessor.cpp" />
     <ClCompile Include="server.cpp" />

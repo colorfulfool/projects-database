@@ -55,6 +55,12 @@
     <ClInclude Include="..\database-objects\ObjectsContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\database-objects\Lecturer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\database-objects\Student.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="client.cpp">
@@ -76,6 +82,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\database-objects\ObjectsContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\database-objects\Lecturer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\database-objects\Student.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

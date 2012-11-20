@@ -2,6 +2,7 @@
 
 DatabaseObject::DatabaseObject()
 {
+	this->id = 0;
 }
 
 DatabaseObject::~DatabaseObject()
