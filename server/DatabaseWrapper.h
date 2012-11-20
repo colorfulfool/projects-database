@@ -22,7 +22,6 @@ public:
 
 	ObjectsContainer* getObjects(DatabaseObject *object); //возвращает все объекты указанного типа
 	ObjectsContainer* getObjectsByAttribute(DatabaseObject *object, LPCWSTR attribute, LPCWSTR value); //возращает объекты указанного типа, имеющие указанное значение атрибута
-	void addObject(DatabaseObject *object);
 	void updateObject(DatabaseObject *object);
 	void deleteObject(DatabaseObject *object);
 protected:

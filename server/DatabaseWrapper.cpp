@@ -69,3 +69,23 @@ void DatabaseWrapper::recreateDatabase()
 
 	printf("Database structure has been recreated.");
 }
+
+void DatabaseWrapper::updateObject(DatabaseObject *object)
+{
+	WideCharToMultiByte(CP_UTF8, NULL, object->getUpdateSQL(), 350, sqlQueryEncoded, 350, NULL, NULL);
+
+	stmt = con->createStatement();
+	stmt->execute(sqlQueryEncoded);
+
+	return;
+}
+
+void DatabaseWrapper::deleteObject(DatabaseObject *object)
+{
+	WideCharToMultiByte(CP_UTF8, NULL, object->getDeleteSQL(), 350, sqlQueryEncoded, 350, NULL, NULL);
+
+	stmt = con->createStatement();
+	stmt->execute(sqlQueryEncoded);
+
+	return;
+}

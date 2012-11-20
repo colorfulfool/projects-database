@@ -36,7 +36,7 @@ LPWSTR Project::getDeleteSQL()
 {
 	WCHAR query[350];
 
-	swprintf(query, L"DETELE FROM `project` WHERE `id` = %d", this->id);
+	swprintf(query, L"DELETE FROM `project` WHERE `id` = %d", this->id);
 
 	return query;
 }

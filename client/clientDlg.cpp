@@ -161,7 +161,10 @@ void CclientDlg::projectUpdateRequested()
 void CclientDlg::projectRemoveRequested()
 {
 	UpdateData(TRUE);
-	// TODO: Add your control notification handler code here
+
+	int id = _ttoi(table.GetItemText(table.GetSelectionMark(), 0));
+
+	RequestGenerator::instance()->removeProject(id);
 }
 
 

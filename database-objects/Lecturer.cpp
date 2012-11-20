@@ -33,7 +33,7 @@ LPWSTR Lecturer::getDeleteSQL()
 {
 	WCHAR query[350];
 
-	swprintf(query, L"DETELE FROM `lecturer` WHERE `id` = %d", this->id);
+	swprintf(query, L"DELETE FROM `lecturer` WHERE `id` = %d", this->id);
 
 	return query;
 }

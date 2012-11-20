@@ -49,6 +49,8 @@ void RequestProcessor::displatchRequest(RequestHeader *header, char* body)
 	if (strcmp(usecase, "/project")==0) responseDecorator(ViewsCollection::allProjects, header, body); //перебираю представления в поисках подходящего
 	if (strcmp(usecase, "/project/lecturer")==0) responseDecorator(ViewsCollection::lecturerProjects, header, body);
 	if (strcmp(usecase, "/project/group")==0) responseDecorator(ViewsCollection::groupProjects, header, body);
+	if (strcmp(usecase, "/lecturer")==0) responseDecorator(ViewsCollection::allLecturers, header, body);
+	if (strcmp(usecase, "/student")==0) responseDecorator(ViewsCollection::allStudents, header, body);
 }
 
 void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *header, char* body)
@@ -62,9 +64,15 @@ void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *heade
 		responseBody = view(header->method, body);
 
 		strcpy(response->status, "OK");
-		response->bodySize = responseBody->totalSize();
 
-		sendResponse(response, responseBody->dataPointer());
+		if (responseBody != NULL) //сервер что-то возвращает
+		{
+			response->bodySize = responseBody->totalSize();
+			sendResponse(response, responseBody->dataPointer());
+		} else { //сервер не возвращает ничего (значит, и не надо)
+			response->bodySize = 0;
+			sendResponse(response, NULL);
+		}
 	} catch (sql::SQLException &error) {
 		strcpy(response->status, "FAIL");
 		response->bodySize = strlen(error.what())+1;
@@ -78,7 +86,9 @@ void RequestProcessor::sendResponse(ResponseHeader *header, char* body)
 	printf("%s %s\n", header->URI, header->status);
 
 	send(working_socket, (char*)header, sizeof(ResponseHeader), NULL);
-	send(working_socket, (char*)body, header->bodySize, NULL);
+
+	if (header->bodySize > 0) //нужно отправить еще и тело
+		send(working_socket, (char*)body, header->bodySize, NULL);
 }
 
 int RequestProcessor::mainLoopIteration()

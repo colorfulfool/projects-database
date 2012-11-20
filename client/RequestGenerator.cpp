@@ -164,7 +164,11 @@ void RequestGenerator::editProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo,
 
 void RequestGenerator::removeProject(int id)
 {
-	sendRequest("DELETE", "/project", (char*)id, sizeof(int));
+	Project *newOne = new Project();
+
+	newOne->id = id;
+
+	sendRequest("DELETE", "/project", (char*)newOne, sizeof(Project));
 }
 
 void RequestGenerator::setMainForm(CclientDlg *dialog)
