@@ -147,14 +147,31 @@ void CclientDlg::allProjectsRequested()
 void CclientDlg::projectAddRequested()
 {
 	dialog = new projectDialog();
-	dialog->DoModal();
+
+	currentID = 0;
+
+	INT_PTR result = dialog->DoModal();
+	if (result == IDOK) projectAddCompleted();
 }
 
 
 void CclientDlg::projectUpdateRequested()
 {
-	UpdateData(TRUE);
-	// TODO: Add your control notification handler code here
+	dialog = new projectDialog();
+
+	currentID = _ttoi(table.GetItemText(table.GetSelectionMark(), 0)); //беру id выбранного курсового из таблицы
+
+	dialog->task = table.GetItemText(table.GetSelectionMark(), 1);
+	dialog->subject = table.GetItemText(table.GetSelectionMark(), 2);
+	dialog->dueTo = table.GetItemText(table.GetSelectionMark(), 4);
+	dialog->completeness = _ttoi(table.GetItemText(table.GetSelectionMark(), 3));
+	dialog->lecturer = table.GetItemText(table.GetSelectionMark(), 5);
+	dialog->student = table.GetItemText(table.GetSelectionMark(), 6);
+
+	UpdateData(FALSE);
+	
+	INT_PTR result = dialog->DoModal();
+	if (result == IDOK) projectAddCompleted();
 }
 
 
@@ -170,15 +187,19 @@ void CclientDlg::projectRemoveRequested()
 
 void CclientDlg::studentAddRequested()
 {
-	UpdateData(TRUE);
-	// TODO: Add your command handler code here
+	dataDialogPointer = new dataDialog();
+
+	INT_PTR result = dataDialogPointer->DoModal();
+	if (result == IDOK) studentAddCompleted();
 }
 
 
 void CclientDlg::lecturerAddRequested()
 {
-	UpdateData(TRUE);
-	// TODO: Add your command handler code here
+	dataDialogPointer = new dataDialog(TRUE);
+
+	INT_PTR result = dataDialogPointer->DoModal();
+	if (result == IDOK) lecturerAddCompleted();
 }
 
 
@@ -201,10 +222,22 @@ void CclientDlg::diagramRequested()
 
 void CclientDlg::projectAddCompleted()
 {
-	UpdateData(TRUE);
-	RequestGenerator::instance()->addProject(dialog->task.GetString(), dialog->subject.GetString(), dialog->dueTo.GetString(), dialog->completeness, dialog->lecturer.GetString(), dialog->student.GetString());
+	if (currentID == 0) //создание проекта
+	{
+		RequestGenerator::instance()->addProject(dialog->task.GetString(), dialog->subject.GetString(), dialog->dueTo.GetString(), dialog->completeness, dialog->lecturer.GetString(), dialog->student.GetString());
+	} else { //либо изменение существующего
+		RequestGenerator::instance()->editProject(currentID, dialog->task.GetString(), dialog->subject.GetString(), dialog->dueTo.GetString(), dialog->completeness, dialog->lecturer.GetString(), dialog->student.GetString());
+	}
+}
 
-	dialog->EndDialog(0);
+void CclientDlg::studentAddCompleted()
+{
+	RequestGenerator::instance()->addStudent(dataDialogPointer->name.GetString(), dataDialogPointer->group.GetString());
+}
+
+void CclientDlg::lecturerAddCompleted()
+{
+	RequestGenerator::instance()->addLecturer(dataDialogPointer->name.GetString());
 }
 
 void CclientDlg::showError(WCHAR *message)

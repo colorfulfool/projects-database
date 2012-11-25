@@ -20,16 +20,18 @@ ObjectsContainer* ViewsCollection::allProjects(char* method, char* requestBody)
 		return DatabaseWrapper::instance()->getObjects(new Project());
 	if ((strcmp(method, "PUT") == 0)||(strcmp(method, "POST") == 0)) //PUT или POST - значит обновление
 	{
-		Project *object = (Project*)requestBody;
+		Project *object = new Project(*(Project*)requestBody);
 
 		ObjectsContainer *result; //разбираюсь с внешними ключами:
 		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Lecturer(), L"name", object->lecturer); //со ссылкой на преподавателя
 		if (result->next() == FALSE) throwAnException("Foreign key error: no such lecturer"); //не вернулось ни одного объекта - что-то пошло не так, бросаю исключение
-		object->lecturer_id = result->current()->id;
+		Lecturer* related_object = (Lecturer*)(result->current());
+		object->lecturer_id = related_object->id;
 
 		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Student(), L"name", object->student); //и на студента
 		if (result->next() == FALSE) throwAnException("Foreign key error: no such student");
-		object->student_id = result->current()->id;
+		Student* another_related_object = (Student*)(result->current());
+		object->student_id = another_related_object->id;
 
 		DatabaseWrapper::instance()->updateObject(object);
 		return NULL;
@@ -57,17 +59,17 @@ ObjectsContainer* ViewsCollection::allStudents(char method[6], char* requestBody
 		return DatabaseWrapper::instance()->getObjects(new Student());
 	if (strcmp(method, "PUT") == 0)
 	{
-		DatabaseWrapper::instance()->updateObject((Student*)requestBody);
+		DatabaseWrapper::instance()->updateObject(new Student(*(Student*)requestBody));
 		return NULL;
 	}
 	if (strcmp(method, "POST") == 0)
 	{
-		DatabaseWrapper::instance()->updateObject((Student*)requestBody);
+		DatabaseWrapper::instance()->updateObject(new Student(*(Student*)requestBody));
 		return NULL;
 	}
 	if (strcmp(method, "DELETE") == 0)
 	{
-		DatabaseWrapper::instance()->deleteObject((Student*)requestBody);
+		DatabaseWrapper::instance()->deleteObject(new Student(*(Student*)requestBody));
 		return NULL;
 	}
 }
@@ -78,17 +80,17 @@ ObjectsContainer* ViewsCollection::allLecturers(char method[6], char* requestBod
 		return DatabaseWrapper::instance()->getObjects(new Lecturer());
 	if (strcmp(method, "PUT") == 0)
 	{
-		DatabaseWrapper::instance()->updateObject((Lecturer*)requestBody);
+		DatabaseWrapper::instance()->updateObject(new Lecturer(*(Lecturer*)requestBody));
 		return NULL;
 	}
 	if (strcmp(method, "POST") == 0)
 	{
-		DatabaseWrapper::instance()->updateObject((Lecturer*)requestBody);
+		DatabaseWrapper::instance()->updateObject(new Lecturer(*(Lecturer*)requestBody));
 		return NULL;
 	}
 	if (strcmp(method, "DELETE") == 0)
 	{
-		DatabaseWrapper::instance()->deleteObject((Lecturer*)requestBody);
+		DatabaseWrapper::instance()->deleteObject(new Lecturer(*(Lecturer*)requestBody));
 		return NULL;
 	}
 }

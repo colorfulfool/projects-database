@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "resource.h"
+#include "dataDialog.h"
 
 #include "Project.h"
 #include "RequestGenerator.h"
@@ -58,8 +59,11 @@ private:
 	CString groupName;
 
 	projectDialog *dialog;
+	dataDialog *dataDialogPointer;
 public:
 	afx_msg void projectAddCompleted();
+	afx_msg void lecturerAddCompleted();
+	afx_msg void studentAddCompleted();
 private:
 	CString connectionStateEdit;
 public:
@@ -68,4 +72,6 @@ private:
 	CString addressEdit;
 	CString portEdit;
 	CListCtrl table;
+
+	int currentID;
 };

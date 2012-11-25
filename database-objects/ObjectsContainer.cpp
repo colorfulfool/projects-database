@@ -5,6 +5,8 @@ ObjectsContainer::ObjectsContainer(void)
 	objectSize = 0;
 	objectsCount = 0;
 	storage = NULL;
+
+	currentIndex = -1;
 }
 
 ObjectsContainer::ObjectsContainer(DatabaseObject *objectExample, int sizeTotal)

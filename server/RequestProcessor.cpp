@@ -102,7 +102,7 @@ int RequestProcessor::mainLoopIteration()
 	while (1)
 	{
 		RequestHeader *header = new RequestHeader();
-		if (recv(working_socket, (char*)header, sizeof(RequestHeader), NULL) > 0) //принимаю заголовок
+		if (recv(working_socket, (char*)header, sizeof(RequestHeader), NULL) >= 0) //принимаю заголовок
 		{
 			char *body;
 			if (header->bodySize > 0)

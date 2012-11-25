@@ -2,6 +2,8 @@
 #include "DatabaseObject.h"
 #include "Project.h"
 #include "ObjectsContainer.h"
+#include "Lecturer.h"
+#include "Student.h"
 
 RequestGenerator::RequestGenerator(void)
 {
@@ -141,23 +143,34 @@ void RequestGenerator::addProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, 
 
 void RequestGenerator::addLecturer(LPCWSTR fullName)
 {
+	Lecturer *newOne = new Lecturer();
 
+	wcscpy(newOne->name, fullName);
+
+	sendRequest("POST", "/lecturer", (char*)newOne, sizeof(Lecturer));
 }
 
 void RequestGenerator::addStudent(LPCWSTR fullName, LPCWSTR group)
 {
+	Student *newOne = new Student();
 
+	wcscpy(newOne->name, fullName);
+	wcscpy(newOne->group, group);
+
+	sendRequest("POST", "/student", (char*)newOne, sizeof(Student));
 }
 
-void RequestGenerator::editProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)
+void RequestGenerator::editProject(int id, LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)
 {
 	Project *newOne = new Project();
 
+	newOne->id = id;
 	wcscpy(newOne->task, task);
 	wcscpy(newOne->subject, subject);
 	wcscpy(newOne->dueTo, dueTo);
 	newOne->completeness = completeness;
 	wcscpy(newOne->lecturer, lecturer);
+	wcscpy(newOne->student, student);
 
 	sendRequest("PUT", "/project", (char*)newOne, sizeof(Project));
 }

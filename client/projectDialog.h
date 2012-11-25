@@ -6,7 +6,7 @@
 #include <afxcmn.h>
 #include <afxdialogex.h>
 
-class projectDialog : public CDialogEx
+class projectDialog : public CDialog
 {
 	DECLARE_DYNAMIC(projectDialog)
 
@@ -15,7 +15,7 @@ public:
 	virtual ~projectDialog();
 
 // Dialog Data
-	enum { IDD = projectDialogForm };
+	enum { IDD = projectForm };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -24,8 +24,13 @@ protected:
 public:
 	CString task;
 	CString subject;
-	CString dueTo;
 	int completeness;
 	CString student;
 	CString lecturer;
+	CString dueTo;
+	CString name;
+	CString group;
+
+
+	afx_msg void sendRequested();
 };

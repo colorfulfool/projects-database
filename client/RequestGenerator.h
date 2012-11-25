@@ -30,7 +30,7 @@ public:
 	void addProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student);
 	void addLecturer(LPCWSTR fullName);
 	void addStudent(LPCWSTR fullName, LPCWSTR group);
-	void editProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student);
+	void editProject(int id, LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student);
 	void removeProject(int id);
 	void fullReport();
 	void diagram(LPCWSTR groupName);
