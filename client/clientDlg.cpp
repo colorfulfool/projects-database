@@ -4,6 +4,7 @@
 #include "RequestGenerator.h"
 
 #include "mgl2\mgl.h"
+#include <atlimage.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -289,7 +290,7 @@ void CclientDlg::serverConnectRequested()
 
 void CclientDlg::displayDiagram(ObjectsContainer *list)
 {
-	float buckets[10];
+	float *buckets = (float*)calloc(10, sizeof(float));
 
 	Project *object;
 	while (list->next())
@@ -308,9 +309,22 @@ void CclientDlg::displayDiagram(ObjectsContainer *list)
 	data.Set(buckets, 10);
 
 	mglGraph graph;
-	graph.Box();
+	graph.SetRange('y', data);
+	graph.SetTicks('y', 1);
+	graph.SetTicks('x', 0.2);
+	graph.LoadFont("STIX", "."); 
+	graph.Label('x', L"Процент готовности");
+	graph.Label('y', L"Количество студентов");
+
+	WCHAR title[50];
+	swprintf(title, L"Гистограмма успеваемости группы %s", groupName.GetString());
+	graph.Title(title);
+
 	graph.Bars(data);
-	graph.WritePNG("histogram.png");
+	graph.Box();
+
+	graph.WriteBMP("histogram.bmp");
+	printf(graph.Message());
 
 	MessageBox(L"Гистограмма успеваемости выбранной группы сохранена в файл histogram.png");
 }

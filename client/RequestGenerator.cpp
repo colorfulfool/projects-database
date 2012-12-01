@@ -137,6 +137,7 @@ void RequestGenerator::addProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, 
 	wcscpy(newOne->dueTo, dueTo);
 	newOne->completeness = completeness;
 	wcscpy(newOne->lecturer, lecturer);
+	wcscpy(newOne->student, student);
 
 	sendRequest("POST", "/project", (char*)newOne, sizeof(Project));
 }

@@ -75,5 +75,6 @@ private:
 	CString portEdit;
 	CListCtrl table;
 
+	char *bytes;
 	int currentID;
 };
