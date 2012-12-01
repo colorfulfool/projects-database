@@ -9,9 +9,11 @@
 #include "dataDialog.h"
 
 #include "Project.h"
+#include "Student.h"
 #include "RequestGenerator.h"
 #include "projectDialog.h"
 #include "ObjectsContainer.h"
+
 #include "afxcmn.h"
 
 // диалоговое окно CclientDlg

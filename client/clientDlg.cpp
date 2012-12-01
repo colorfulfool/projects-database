@@ -1,11 +1,9 @@
-
-// clientDlg.cpp : файл реализации
-//
-
 #include "client.h"
 #include "clientDlg.h"
 #include "afxdialogex.h"
 #include "RequestGenerator.h"
+
+#include "mgl2\mgl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -291,7 +289,30 @@ void CclientDlg::serverConnectRequested()
 
 void CclientDlg::displayDiagram(ObjectsContainer *list)
 {
+	float buckets[10];
 
+	Project *object;
+	while (list->next())
+	{
+		object = (Project*)list->current();
+
+		if (object->completeness == 100)
+		{
+			buckets[9] += 1;
+		} else {
+			buckets[object->completeness/10] += 1;
+		}
+	}
+
+	mglData data;
+	data.Set(buckets, 10);
+
+	mglGraph graph;
+	graph.Box();
+	graph.Bars(data);
+	graph.WritePNG("histogram.png");
+
+	MessageBox(L"Гистограмма успеваемости выбранной группы сохранена в файл histogram.png");
 }
 
 void CclientDlg::saveTextReport(ObjectsContainer *list)

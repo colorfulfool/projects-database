@@ -3,41 +3,13 @@
 #include <cppconn\exception.h>
 using namespace std;
 
-
-
-#define PORT 1234
-
-RequestProcessor::RequestProcessor(void)
+RequestProcessor::RequestProcessor(int socket_to_use)
 {
-	struct sockaddr_in server_address;
-
-	listening_socket = socket(AF_INET, SOCK_STREAM, 0); //создаю сокет
-
-	memset(&server_address, 0, sizeof(struct sockaddr_in));
-	server_address.sin_family = AF_INET; //IPv4
-	server_address.sin_port = htons(PORT);
-	server_address.sin_addr.s_addr = inet_addr("0.0.0.0");
-
-	bind(listening_socket, (struct sockaddr *)&server_address, sizeof(server_address));
-
-	listen(listening_socket, SOMAXCONN);
-
-	printf("Serving requests at %s:%d...\n", inet_ntoa(server_address.sin_addr), PORT);
+	this->working_socket = socket_to_use;
 }
 
 RequestProcessor::~RequestProcessor(void)
 {
-}
-
-RequestProcessor* RequestProcessor::_instance = 0;
-
-RequestProcessor* RequestProcessor::instance()
-{
-	if (_instance == 0)
-	{
-		_instance = new RequestProcessor();
-	}
-	return _instance;
 }
 
 void RequestProcessor::displatchRequest(RequestHeader *header, char* body)
@@ -83,7 +55,7 @@ void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *heade
 
 void RequestProcessor::sendResponse(ResponseHeader *header, char* body)
 {
-	printf("%s %s\n", header->URI, header->status);
+	printf("%s %s (%d)\n", header->URI, header->status, working_socket);
 
 	send(working_socket, (char*)header, sizeof(ResponseHeader), NULL);
 
@@ -93,11 +65,6 @@ void RequestProcessor::sendResponse(ResponseHeader *header, char* body)
 
 int RequestProcessor::mainLoopIteration()
 {
-	int size_of_address = sizeof(struct sockaddr_in);
-	working_socket = accept(listening_socket, (struct sockaddr *)&client_address, &size_of_address);
-
-	printf("Client %s connected.\n", inet_ntoa(client_address.sin_addr));
-
 	//тут можно форкнуть
 	while (1)
 	{
