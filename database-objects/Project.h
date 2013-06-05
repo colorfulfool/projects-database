@@ -9,15 +9,15 @@ public:
 	Project(char);
 	~Project();
 
-	WCHAR task[100];
+	WCHAR task[100]; 
 	WCHAR subject[50];
 	WCHAR dueTo[50];
 	int completeness;
 
-	WCHAR lecturer[100];
-	int lecturer_id;
-	WCHAR student[100];
-	int student_id;
+	WCHAR lecturer[100]; //имя связанного преподавателя
+	int lecturer_id; //его первичный ключ (для записи в базу внешнего ключа)
+	WCHAR student[100]; //имя связанного студента
+	int student_id; //его первичный ключ
 
 	void fillFromData(sql::ResultSet *data);
 	virtual DatabaseObject* createSameObject();

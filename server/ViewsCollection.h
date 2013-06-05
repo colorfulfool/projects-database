@@ -15,7 +15,7 @@ public:
 	static ObjectsContainer* allStudents(char method[6], char* requestBody); //для операций над студентами
 	static ObjectsContainer* allLecturers(char method[6], char* requestBody);
 
-	static void throwAnException(char* message);
+	static ObjectsContainer* throwAnException(char* message);
 protected:
 	ViewsCollection(void);
 private:

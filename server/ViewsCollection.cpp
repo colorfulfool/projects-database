@@ -24,12 +24,14 @@ ObjectsContainer* ViewsCollection::allProjects(char* method, char* requestBody)
 
 		ObjectsContainer *result; //разбираюсь с внешними ключами:
 		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Lecturer(), L"name", object->lecturer); //со ссылкой на преподавателя
-		if (result->next() == FALSE) throwAnException("Foreign key error: no such lecturer"); //не вернулось ни одного объекта - что-то пошло не так, бросаю исключение
+		if (result->next() == FALSE)
+			return throwAnException("Foreign key error: no such lecturer"); //не вернулось ни одного объекта - что-то пошло не так, бросаю исключение
 		Lecturer* related_object = (Lecturer*)(result->current());
 		object->lecturer_id = related_object->id;
 
 		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Student(), L"name", object->student); //и на студента
-		if (result->next() == FALSE) throwAnException("Foreign key error: no such student");
+		if (result->next() == FALSE) 
+			return throwAnException("Foreign key error: no such student");
 		Student* another_related_object = (Student*)(result->current());
 		object->student_id = another_related_object->id;
 
@@ -95,8 +97,13 @@ ObjectsContainer* ViewsCollection::allLecturers(char method[6], char* requestBod
 	}
 }
 
-void ViewsCollection::throwAnException(char* message)
+ObjectsContainer* ViewsCollection::throwAnException(char* message)
 {
-	std::string *messagePacked = new std::string(message);
-	throw sql::SQLException(*messagePacked);
+	//std::string *messagePacked = new std::string(message);
+	//throw sql::SQLException(*messagePacked);
+
+	char msgString[300] = "FAIL";
+	strcpy(msgString+5, message);
+
+	return (ObjectsContainer*)msgString;
 }

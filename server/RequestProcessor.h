@@ -21,6 +21,7 @@ private:
 	void responseDecorator(viewFunction view, RequestHeader *header, char* body); //использует представдение и формирует ответ сервера
 	void sendResponse(ResponseHeader *header, char* body); //отправляет ответ клиенту
 
+
 	// int listening_socket;
 	int working_socket;
 

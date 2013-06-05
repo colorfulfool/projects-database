@@ -35,6 +35,13 @@ void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *heade
 	{
 		responseBody = view(header->method, body);
 
+		if (strcmp((char*)responseBody, "FAIL")==0)
+		{
+			char *msg = (char*)responseBody + 5;
+			std::string *messagePacked = new std::string(msg);
+			throw sql::SQLException(*messagePacked);
+		}
+
 		strcpy(response->status, "OK");
 
 		if (responseBody != NULL) //сервер что-то возвращает
@@ -65,7 +72,6 @@ void RequestProcessor::sendResponse(ResponseHeader *header, char* body)
 
 int RequestProcessor::mainLoopIteration()
 {
-	//тут можно форкнуть
 	while (1)
 	{
 		RequestHeader *header = new RequestHeader();

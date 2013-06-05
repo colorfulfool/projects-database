@@ -25,6 +25,7 @@ void DatabaseWrapper::connectToDatabase()
 	con = sql::mysql::get_driver_instance()->connect("tcp://127.0.0.1:3306", "root", "password");
 
 	stmt = con->createStatement();
+	stmt->execute("CREATE DATABASE IF NOT EXISTS `projects-database`"); //если базы данных еще нет, она будет создана
 	stmt->execute("USE `projects-database`");
 }
 
