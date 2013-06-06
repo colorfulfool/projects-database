@@ -36,9 +36,9 @@ ObjectsContainer* DatabaseWrapper::getObjects(DatabaseObject *object)
 	return gatherQuriedObjects(object);
 }
 
-ObjectsContainer* DatabaseWrapper::getRelatedObjects(DatabaseObject *object)
+ObjectsContainer* DatabaseWrapper::getRelatedObjects(DatabaseObject *object, LPCWSTR relatedName)
 {
-	// WideCharToMultiByte(CP_UTF8, NULL, object->getSelectRelatedSQL(), 350, sqlQueryEncoded, 350, NULL, NULL);
+	WideCharToMultiByte(CP_UTF8, NULL, object->getSelectRelatedSQL(relatedName), 350, sqlQueryEncoded, 350, NULL, NULL);
 
 	return gatherQuriedObjects(object);
 }

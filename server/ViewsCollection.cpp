@@ -49,7 +49,7 @@ ObjectsContainer* ViewsCollection::productSales(char *method, char *requestBody)
 
 static ObjectsContainer* ViewsCollection::productPurchases(char method[6], char* requestBody)
 {
-
+	return DatabaseWrapper::instance()->getRelatedObjects(new Purchase(), (LPCWSTR)requestBody);
 }
 
 ObjectsContainer* ViewsCollection::allPurchases(char* method, char* requestBody)

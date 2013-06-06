@@ -15,7 +15,7 @@ public:
 	virtual LPWSTR getDeleteSQL();
 	virtual LPWSTR getSelectObjectSQL();
 	
-	virtual LPWSTR getRelatedByName(LPWSTR name);
+	virtual LPWSTR getRelatedByNameSQL(LPWSTR name);
 
 	virtual DatabaseObject* createSameObject(); //фабричный метод, возвращает объект того же типа
 	virtual int sizeOfSelf(); //возвращает размер объекта своего класса
