@@ -79,4 +79,5 @@ private:
 
 	char *bytes;
 	int currentID;
+	bool isSaleMode;
 };

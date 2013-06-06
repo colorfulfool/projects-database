@@ -34,9 +34,9 @@ void CclientDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BUTTON1, &CclientDlg::lecturerProjectsRequested)
+//	ON_BN_CLICKED(IDC_BUTTON1, &CclientDlg::lecturerProjectsRequested)
 	ON_BN_CLICKED(IDC_BUTTON2, &CclientDlg::groupProjectsRequested)
-	ON_BN_CLICKED(IDC_BUTTON3, &CclientDlg::allProjectsRequested)
+//	ON_BN_CLICKED(IDC_BUTTON3, &CclientDlg::allProjectsRequested)
 	ON_BN_CLICKED(IDC_BUTTON4, &CclientDlg::projectAddRequested)
 	ON_BN_CLICKED(IDC_BUTTON5, &CclientDlg::projectUpdateRequested)
 	ON_BN_CLICKED(IDC_BUTTON6, &CclientDlg::projectRemoveRequested)
@@ -46,6 +46,13 @@ BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
 	ON_COMMAND(ID_32775, &CclientDlg::diagramRequested)
 	ON_BN_CLICKED(sendButton, &CclientDlg::projectAddCompleted)
 	ON_BN_CLICKED(IDC_BUTTON7, &CclientDlg::serverConnectRequested)
+	ON_BN_CLICKED(IDC_BUTTON8, &CclientDlg::productPurchasesRequested)
+//	ON_BN_CLICKED(IDC_BUTTON9, &CclientDlg::allProfitabilityRequested)
+	ON_BN_CLICKED(IDC_BUTTON10, &CclientDlg::allSalesRequested)
+	ON_BN_CLICKED(IDC_BUTTON1, &CclientDlg::productSalesRequested)
+	ON_BN_CLICKED(IDC_BUTTON9, &CclientDlg::productProfitabilityRequested)
+	ON_BN_CLICKED(IDC_BUTTON3, &CclientDlg::allProfitabilityRequested)
+	ON_BN_CLICKED(IDC_BUTTON10, &CclientDlg::allPurchasesRequested)
 END_MESSAGE_MAP()
 
 
@@ -70,18 +77,12 @@ BOOL CclientDlg::OnInitDialog()
 
 	table.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 	table.InsertColumn(0, L"id");
-	table.InsertColumn(1, L"Задание");
+	table.InsertColumn(1, L"Наименование");
 	table.SetColumnWidth(1, 150);
-	table.InsertColumn(2, L"Предмет");
-	table.SetColumnWidth(2, 100);
-	table.InsertColumn(3, L"Готовность, %");
-	table.SetColumnWidth(3, 30);
-	table.InsertColumn(4, L"Срок сдачи");
-	table.SetColumnWidth(4, 70);
-	table.InsertColumn(5, L"Преподаватель");
-	table.SetColumnWidth(5, 100);
-	table.InsertColumn(6, L"Студент");
-	table.SetColumnWidth(6, 100);
+	table.InsertColumn(2, L"Количество");
+	table.SetColumnWidth(2, 50);
+	table.InsertColumn(3, L"Цена за единицу");
+	table.SetColumnWidth(3, 50);
 
 	UpdateData(FALSE);
 	
@@ -121,33 +122,12 @@ HCURSOR CclientDlg::OnQueryDragIcon()
 }
 
 
-
-void CclientDlg::lecturerProjectsRequested()
-{
-	UpdateData(TRUE);
-	RequestGenerator::instance()->lecturerProjects(lecturerName.GetString());
-}
-
-
-void CclientDlg::groupProjectsRequested()
-{
-	UpdateData(TRUE);
-	RequestGenerator::instance()->groupProjects(groupName.GetString());
-}
-
-
-void CclientDlg::allProjectsRequested()
-{
-	UpdateData(TRUE);
-	RequestGenerator::instance()->allProjects();
-}
-
-
 void CclientDlg::projectAddRequested()
 {
 	dialog = new projectDialog();
 
 	currentID = 0;
+	isSaleMode = 1;
 
 	INT_PTR result = dialog->DoModal();
 	if (result == IDOK) projectAddCompleted();
@@ -160,12 +140,9 @@ void CclientDlg::projectUpdateRequested()
 
 	currentID = _ttoi(table.GetItemText(table.GetSelectionMark(), 0)); //беру id выбранного курсового из таблицы
 
-	dialog->task = table.GetItemText(table.GetSelectionMark(), 1);
-	dialog->subject = table.GetItemText(table.GetSelectionMark(), 2);
-	dialog->dueTo = table.GetItemText(table.GetSelectionMark(), 4);
-	dialog->completeness = _ttoi(table.GetItemText(table.GetSelectionMark(), 3));
-	dialog->lecturer = table.GetItemText(table.GetSelectionMark(), 5);
-	dialog->student = table.GetItemText(table.GetSelectionMark(), 6);
+	dialog->name = table.GetItemText(table.GetSelectionMark(), 1);
+	dialog->amount = _ttoi(table.GetItemText(table.GetSelectionMark(), 2));
+	dialog->cost = _ttoi(table.GetItemText(table.GetSelectionMark(), 3));
 
 	UpdateData(FALSE);
 	
@@ -180,25 +157,10 @@ void CclientDlg::projectRemoveRequested()
 
 	int id = _ttoi(table.GetItemText(table.GetSelectionMark(), 0));
 
-	RequestGenerator::instance()->removeProject(id);
-}
-
-
-void CclientDlg::studentAddRequested()
-{
-	dataDialogPointer = new dataDialog();
-
-	INT_PTR result = dataDialogPointer->DoModal();
-	if (result == IDOK) studentAddCompleted();
-}
-
-
-void CclientDlg::lecturerAddRequested()
-{
-	dataDialogPointer = new dataDialog(TRUE);
-
-	INT_PTR result = dataDialogPointer->DoModal();
-	if (result == IDOK) lecturerAddCompleted();
+	if (isSaleMode)
+		RequestGenerator::instance()->removeSale(id);
+	else
+		RequestGenerator::instance()->removePurchase(id);
 }
 
 
@@ -209,34 +171,30 @@ void CclientDlg::fullReportRequested()
 }
 
 
-void CclientDlg::diagramRequested()
-{
-	UpdateData(TRUE);
-
-	if (groupName.IsEmpty()) this->MessageBox(L"Укажите группу, по данным которой нужно строить диаграмму, в соответствующем поле.");
-
-	RequestGenerator::instance()->diagram(groupName.GetString());
-}
-
-
 void CclientDlg::projectAddCompleted()
 {
 	if (currentID == 0) //создание проекта
 	{
-		RequestGenerator::instance()->addProject(dialog->task.GetString(), dialog->subject.GetString(), dialog->dueTo.GetString(), dialog->completeness, dialog->lecturer.GetString(), dialog->student.GetString());
+		if (isSaleMode)
+			RequestGenerator::instance()->addSale(dialog->name.GetString(), dialog->amount, dialog->cost);
+		else
+			RequestGenerator::instance()->addPurchase(dialog->name.GetString(), dialog->amount, dialog->cost);
 	} else { //либо изменение существующего
-		RequestGenerator::instance()->editProject(currentID, dialog->task.GetString(), dialog->subject.GetString(), dialog->dueTo.GetString(), dialog->completeness, dialog->lecturer.GetString(), dialog->student.GetString());
+		if (isSaleMode)
+			RequestGenerator::instance()->editSale(currentID, dialog->name.GetString(), dialog->amount, dialog->cost);
+		else
+			RequestGenerator::instance()->editPurchase(currentID, dialog->name.GetString(), dialog->amount, dialog->cost);
 	}
 }
 
 void CclientDlg::studentAddCompleted()
 {
-	RequestGenerator::instance()->addStudent(dataDialogPointer->name.GetString(), dataDialogPointer->group.GetString());
+	// RequestGenerator::instance()->addStudent(dataDialogPointer->name.GetString(), dataDialogPointer->group.GetString());
 }
 
 void CclientDlg::lecturerAddCompleted()
 {
-	RequestGenerator::instance()->addLecturer(dataDialogPointer->name.GetString());
+	// RequestGenerator::instance()->addLecturer(dataDialogPointer->name.GetString());
 }
 
 void CclientDlg::showError(WCHAR *message)
@@ -247,24 +205,23 @@ void CclientDlg::showError(WCHAR *message)
 void CclientDlg::displayObjects(ObjectsContainer *list)
 {
 	int row=0;
-	Project *object;
+	Sale *object; //те же члены у Purchase
 	WCHAR numbersTemp[5];
 
 	table.DeleteAllItems();
 
 	while (list->next())
 	{
-		object = (Project*)list->current();
+		object = (Sale*)list->current();
 
 		swprintf(numbersTemp, L"%d", object->id);
 		int newRow = table.InsertItem(row, numbersTemp);
-		table.SetItemText(newRow, 1, object->task);
-		table.SetItemText(newRow, 2, object->subject);
-		swprintf(numbersTemp, L"%d", object->completeness);
-		table.SetItemText(newRow, 3, numbersTemp);
-		table.SetItemText(newRow, 4, object->dueTo);
-		table.SetItemText(newRow, 5, object->lecturer);
-		table.SetItemText(newRow, 6, object->student);
+		if (isSaleMode)
+			table.SetItemText(newRow, 1, object->product_name);
+		else
+			table.SetItemText(newRow, 1, object->asset_name);
+		swprintf(numbersTemp, L"%d", object->amount);
+		swprintf(numbersTemp, L"%d", object->cost);
 
 		row++;
 	}
@@ -295,47 +252,6 @@ void CclientDlg::serverConnectRequested()
 	}
 }
 
-void CclientDlg::displayDiagram(ObjectsContainer *list)
-{
-	float *buckets = (float*)calloc(10, sizeof(float));
-
-	Project *object;
-	while (list->next())
-	{
-		object = (Project*)list->current();
-
-		if (object->completeness == 100)
-		{
-			buckets[9] += 1;
-		} else {
-			buckets[object->completeness/10] += 1;
-		}
-	}
-
-	mglData data;
-	data.Set(buckets, 10);
-
-	mglGraph graph;
-	graph.SetRange('y', data);
-	graph.SetTicks('y', 1);
-	graph.SetTicks('x', 0.2);
-	graph.LoadFont("STIX", "."); 
-	graph.Label('x', L"Процент готовности");
-	graph.Label('y', L"Количество студентов");
-
-	WCHAR title[50];
-	swprintf(title, L"Гистограмма успеваемости группы %s", groupName.GetString());
-	graph.Title(title);
-
-	graph.Bars(data);
-	graph.Box();
-
-	graph.WriteBMP("histogram.bmp");
-	printf(graph.Message());
-
-	MessageBox(L"Гистограмма успеваемости выбранной группы сохранена в файл histogram.png");
-}
-
 void CclientDlg::saveTextReport(ObjectsContainer *list)
 {
 	FILE *report = fopen("report.csv", "w, ccs=UTF-8");
@@ -353,4 +269,50 @@ void CclientDlg::saveTextReport(ObjectsContainer *list)
 	fclose(report);
 
 	MessageBox(L"Отчет был сохранен в файл report.csv");
+}
+
+void CclientDlg::productPurchasesRequested()
+{
+	isSaleMode = 0;
+
+	updateData(TRUE);
+	RequestGenerator::instance()->productPurchases(productNameEdit.GetString());
+}
+
+
+void CclientDlg::allSalesRequested()
+{
+	isSaleMode = 1;
+
+	RequestGenerator::instance()->allSales();
+}
+
+
+void CclientDlg::productSalesRequested()
+{
+	isSaleMode = 1;
+
+	updateData(TRUE);
+	RequestGenerator::instance()->productSales(productNameEdit.GetString());
+}
+
+
+void CclientDlg::productProfitabilityRequested()
+{
+	updateData(TRUE);
+	RequestGenerator::instance()->productProfitability(productNameEdit.GetString());
+
+
+void CclientDlg::allProfitabilityRequested()
+{
+	RequestGenerator::instance()->allProfitability();
+}
+
+
+void CclientDlg::allPurchasesRequested()
+{
+	isSaleMode = 0;
+
+	updateData(TRUE);
+	RequestGenerator::instance()->allPurchases();
 }
