@@ -8,8 +8,9 @@
 #include "resource.h"
 #include "dataDialog.h"
 
-#include "Project.h"
-#include "Student.h"
+#include "Sale.h"
+#include "Purchase.h"
+#include "ValueObject.h"
 #include "RequestGenerator.h"
 #include "projectDialog.h"
 #include "ObjectsContainer.h"
@@ -53,7 +54,8 @@ public:
 	afx_msg void diagramRequested();
 
 	afx_msg void showError(WCHAR *message);
-	afx_msg void displayProjects(ObjectsContainer *list);
+	afx_msg void displayObjects(ObjectsContainer *list);
+	afx_msg void displayValue(ObjectsContainer *list);
 	void displayDiagram(ObjectsContainer *list);
 	void saveTextReport(ObjectsContainer *list);
 private:

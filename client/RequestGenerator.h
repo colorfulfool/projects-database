@@ -24,16 +24,22 @@ public:
 	int connectToServer(char *address, int port);
 	ResponseBody sendRequest(char method[4], char URI[50], char* body, int bodySize);
 
-	void groupProjects(LPCWSTR groupName);
-	void lecturerProjects(LPCWSTR lenctuerName);
-	void allProjects();
-	void addProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student);
-	void addLecturer(LPCWSTR fullName);
-	void addStudent(LPCWSTR fullName, LPCWSTR group);
-	void editProject(int id, LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student);
-	void removeProject(int id);
+	void allSales();
+	void productSales(LPCWSTR productName);
+	void productPurchases(LPCWSTR productName);
+	void allPurchases();
+
+	void allProfitability();
+	void productProfitability(LPCWSTR productName);
+
+	void addSale(LPCWSTR product_name, int amount, int cost);
+	void addPurchase(LPCWSTR asset_name, int amount, int cost);
+	void editSale(LPCWSTR product_name, int amount, int cost);
+	void editPurchase(LPCWSTR asset_name, int amount, int cost);
+
+	void removePurchase(int id);
+	void removeSale(int id);
 	void fullReport();
-	void diagram(LPCWSTR groupName);
 
 	void setMainForm(CclientDlg *dialog);
 protected:

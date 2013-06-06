@@ -89,100 +89,144 @@ ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* b
 	}
 }
 
-void RequestGenerator::groupProjects(LPCWSTR groupName)
+void RequestGenerator::productSales(LPCWSTR productName)
 {
-	ResponseBody result = sendRequest("GET", "/project/group", (char*)groupName, (wcslen(groupName)+1)*sizeof(WCHAR));
+	ResponseBody result = sendRequest("GET", "/sale/product", (char*)productName, (wcslen(productName)+1)*sizeof(WCHAR));
 
 	if (result.size != 0)
 	{
 		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
 		objects->setDataPointer(result.body);
 
-		mainForm->displayProjects(objects);
+		mainForm->displayObjects(objects);
 	}
 }
 
-void RequestGenerator::lecturerProjects(LPCWSTR lenctuerName)
+void RequestGenerator::productPurchases(LPCWSTR productName)
 {
-	ResponseBody result = sendRequest("GET", "/project/lecturer", (char*)lenctuerName, (wcslen(lenctuerName)+1)*sizeof(WCHAR));
+	ResponseBody result = sendRequest("GET", "/purchase/product", (char*)productName, (wcslen(productName)+1)*sizeof(WCHAR));
 
 	if (result.size != 0)
 	{
 		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
 		objects->setDataPointer(result.body);
 
-		mainForm->displayProjects(objects);
+		mainForm->displayObjects(objects);
 	}
 }
 
-void RequestGenerator::allProjects()
+void RequestGenerator::allSales()
 {
-	ResponseBody result = sendRequest("GET", "/project", NULL, 0);
+	ResponseBody result = sendRequest("GET", "/sale", NULL, 0);
 
 	if (result.size != 0)
 	{
 		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
 		objects->setDataPointer(result.body);
 
-		mainForm->displayProjects(objects);
+		mainForm->displayObjects(objects);
 	}
 }
 
-void RequestGenerator::addProject(LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)
+void RequestGenerator::allPurchases()
 {
-	Project *newOne = new Project(); //добавляемый в базу курсовой
+	ResponseBody result = sendRequest("GET", "/purchase", NULL, 0);
 
-	wcscpy(newOne->task, task);
-	wcscpy(newOne->subject, subject);
-	wcscpy(newOne->dueTo, dueTo);
-	newOne->completeness = completeness;
-	wcscpy(newOne->lecturer, lecturer);
-	wcscpy(newOne->student, student);
+	if (result.size != 0)
+	{
+		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
+		objects->setDataPointer(result.body);
 
-	sendRequest("POST", "/project", (char*)newOne, sizeof(Project));
+		mainForm->displayObjects(objects);
+	}
 }
 
-void RequestGenerator::addLecturer(LPCWSTR fullName)
+void RequestGenerator::addSale(LPCWSTR product_name, int amount, int cost)
 {
-	Lecturer *newOne = new Lecturer();
+	Sale *newOne = new Sale();
 
-	wcscpy(newOne->name, fullName);
+	wcscpy(newOne->product_name, product_name);
+	newOne->amount = amount;
+	newOne->cost = cost;
 
-	sendRequest("POST", "/lecturer", (char*)newOne, sizeof(Lecturer));
+	sendRequest("POST", "/sale", (char*)newOne, sizeof(Sale));
 }
 
-void RequestGenerator::addStudent(LPCWSTR fullName, LPCWSTR group)
+void RequestGenerator::addPurchase(LPCWSTR asset_name, int amount, int cost)
 {
-	Student *newOne = new Student();
+	Sale *newOne = new Sale();
 
-	wcscpy(newOne->name, fullName);
-	wcscpy(newOne->group, group);
+	wcscpy(newOne->asset_name, asset_name);
+	newOne->amount = amount;
+	newOne->cost = cost;
 
-	sendRequest("POST", "/student", (char*)newOne, sizeof(Student));
+	sendRequest("POST", "/purchase", (char*)newOne, sizeof(Sale));
 }
 
-void RequestGenerator::editProject(int id, LPCWSTR task, LPCWSTR subject, LPCWSTR dueTo, int completeness, LPCWSTR lecturer, LPCWSTR student)
+void RequestGenerator::editSale(LPCWSTR product_name, int amount, int cost)
 {
-	Project *newOne = new Project();
+	Sale *newOne = new Sale();
+
+	wcscpy(newOne->product_name, product_name);
+	newOne->amount = amount;
+	newOne->cost = cost;
+
+	sendRequest("PUT", "/sale", (char*)newOne, sizeof(Sale));
+}
+
+void RequestGenerator::editPurchase(LPCWSTR asset_name, int amount, int cost)
+{
+	Sale *newOne = new Sale();
+
+	wcscpy(newOne->asset_name, asset_name);
+	newOne->amount = amount;
+	newOne->cost = cost;
+
+	sendRequest("PUT", "/purchase", (char*)newOne, sizeof(Sale));
+}
+
+void RequestGenerator::allProfitability()
+{
+	ResponseBody result = sendRequest("GET", "/profitability", NULL, 0);
+
+		if (result.size != 0)
+	{
+		ObjectsContainer *objects = new ObjectsContainer(new ValueObject(), result.size);
+		objects->setDataPointer(result.body);
+
+		mainForm->displayValue(objects);
+	}
+}
+
+void RequestGenerator::productProfitability(LPCWSTR productName)
+{
+	ResponseBody result = sendRequest("GET", "/profitability/product", (char*)productName, (wcslen(productName)+1)*sizeof(WCHAR));
+
+		if (result.size != 0)
+	{
+		ObjectsContainer *objects = new ObjectsContainer(new ValueObject(), result.size);
+		objects->setDataPointer(result.body);
+
+		mainForm->displayValue(objects);
+	}
+}
+
+void RequestGenerator::removeSale(int id)
+{
+	Sale *newOne = new Sale();
 
 	newOne->id = id;
-	wcscpy(newOne->task, task);
-	wcscpy(newOne->subject, subject);
-	wcscpy(newOne->dueTo, dueTo);
-	newOne->completeness = completeness;
-	wcscpy(newOne->lecturer, lecturer);
-	wcscpy(newOne->student, student);
 
-	sendRequest("PUT", "/project", (char*)newOne, sizeof(Project));
+	sendRequest("DELETE", "/sale", (char*)newOne, sizeof(Sale));
 }
 
-void RequestGenerator::removeProject(int id)
+void RequestGenerator::removePurchase(int id)
 {
-	Project *newOne = new Project();
+	Purchase *newOne = new Purchase();
 
 	newOne->id = id;
 
-	sendRequest("DELETE", "/project", (char*)newOne, sizeof(Project));
+	sendRequest("DELETE", "/purchase", (char*)newOne, sizeof(Purchase));
 }
 
 void RequestGenerator::setMainForm(CclientDlg *dialog)
@@ -190,22 +234,9 @@ void RequestGenerator::setMainForm(CclientDlg *dialog)
 	mainForm = dialog;
 }
 
-void RequestGenerator::diagram(LPCWSTR groupName)
-{
-	ResponseBody result = sendRequest("GET", "/project/group", (char*)groupName, (wcslen(groupName)+1)*sizeof(WCHAR));
-
-	if (result.size != 0)
-	{
-		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
-		objects->setDataPointer(result.body);
-
-		mainForm->displayDiagram(objects);
-	}
-}
-
 void RequestGenerator::fullReport()
 {
-	ResponseBody result = sendRequest("GET", "/project", NULL, 0);
+	ResponseBody result = sendRequest("GET", "/sale", NULL, 0);
 
 	if (result.size != 0)
 	{

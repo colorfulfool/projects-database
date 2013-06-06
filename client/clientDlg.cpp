@@ -244,7 +244,7 @@ void CclientDlg::showError(WCHAR *message)
 	this->MessageBox((LPCTSTR)message, L"Ошибка", MB_ICONERROR);
 }
 
-void CclientDlg::displayProjects(ObjectsContainer *list)
+void CclientDlg::displayObjects(ObjectsContainer *list)
 {
 	int row=0;
 	Project *object;
@@ -272,6 +272,13 @@ void CclientDlg::displayProjects(ObjectsContainer *list)
 	UpdateData(FALSE);
 }
 
+void CclientDlg::displayValue(ObjectsContainer *list)
+{
+	list->next();
+	ValueObject *value = (ValueObject*)list->current(); //беру единственный объект
+
+	this->MessageBox(value->value, value->name, MB_ICONINFORMATION);
+}
 
 void CclientDlg::serverConnectRequested()
 {
