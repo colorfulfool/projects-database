@@ -39,3 +39,8 @@ LPWSTR DatabaseObject::getSelectObjectSQL()
 {
 	return L"Not implemented";
 }
+
+LPWSTR DatabaseObject::getRelatedByName(LPWSTR name)
+{
+	
+}

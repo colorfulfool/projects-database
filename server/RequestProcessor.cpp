@@ -18,11 +18,11 @@ void RequestProcessor::displatchRequest(RequestHeader *header, char* body)
 	
 	printf("%s %s -> ", header->method, header->URI);
 
-	if (strcmp(usecase, "/project")==0) responseDecorator(ViewsCollection::allProjects, header, body); //перебираю представления в поисках подходящего
-	if (strcmp(usecase, "/project/lecturer")==0) responseDecorator(ViewsCollection::lecturerProjects, header, body);
-	if (strcmp(usecase, "/project/group")==0) responseDecorator(ViewsCollection::groupProjects, header, body);
-	if (strcmp(usecase, "/lecturer")==0) responseDecorator(ViewsCollection::allLecturers, header, body);
-	if (strcmp(usecase, "/student")==0) responseDecorator(ViewsCollection::allStudents, header, body);
+	if (strcmp(usecase, "/sale")==0) responseDecorator(ViewsCollection::allSales, header, body); //перебираю представления в поисках подходящего
+	if (strcmp(usecase, "/sale/product")==0) responseDecorator(ViewsCollection::productSales, header, body);
+	if (strcmp(usecase, "/purchase/product")==0) responseDecorator(ViewsCollection::productPurchases, header, body);
+	if (strcmp(usecase, "/profitabitily")==0) responseDecorator(ViewsCollection::allProfitability, header, body);
+	if (strcmp(usecase, "/profitabitily/product")==0) responseDecorator(ViewsCollection::productProfitability, header, body);
 }
 
 void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *header, char* body)

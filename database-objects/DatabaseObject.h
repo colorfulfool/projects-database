@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <C:\Program Files\MySQL\MySQL Connector C++ 1.1.1\include\cppconn\resultset.h>
+#include "DatabaseWrapper.h"
 
 class DatabaseObject //представл€ет запись из базы данных в виде объекта
 {
@@ -13,6 +14,8 @@ public:
 	virtual LPWSTR getUpdateSQL(); //возвращает SQL-запрос, добавл€ющий объект в базу
 	virtual LPWSTR getDeleteSQL();
 	virtual LPWSTR getSelectObjectSQL();
+	
+	virtual LPWSTR getRelatedByName(LPWSTR name);
 
 	virtual DatabaseObject* createSameObject(); //фабричный метод, возвращает объект того же типа
 	virtual int sizeOfSelf(); //возвращает размер объекта своего класса

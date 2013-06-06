@@ -21,6 +21,7 @@ public:
 	void recreateDatabase(); //создает структуру базы данных
 
 	ObjectsContainer* getObjects(DatabaseObject *object); //возвращает все объекты указанного типа
+	ObjectsContainer* getRelatedObjects(DatabaseObject *object); //возвращает все объекты указанного типа
 	ObjectsContainer* getObjectsByAttribute(DatabaseObject *object, LPCWSTR attribute, LPCWSTR value); //возращает объекты указанного типа, имеющие указанное значение атрибута
 	void updateObject(DatabaseObject *object);
 	void deleteObject(DatabaseObject *object);

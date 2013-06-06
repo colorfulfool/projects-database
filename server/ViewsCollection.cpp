@@ -1,8 +1,9 @@
 #include "ViewsCollection.h"
 #include "DatabaseWrapper.h"
-#include "Project.h"
-#include "Student.h"
-#include "Lecturer.h"
+#include "ObjectsContainer.h"
+#include "Sale.h"
+#include "Purchase.h"
+#include "ValueObject.h"
 
 #include <cppconn\exception.h>
 
@@ -14,87 +15,118 @@ ViewsCollection::~ViewsCollection(void)
 {
 }
 
-ObjectsContainer* ViewsCollection::allProjects(char* method, char* requestBody)
+ObjectsContainer* ViewsCollection::allSales(char* method, char* requestBody)
 {
 	if (strcmp(method, "GET") == 0) //GET - значит выборка
-		return DatabaseWrapper::instance()->getObjects(new Project());
+		return DatabaseWrapper::instance()->getObjects(new Sale());
+
 	if ((strcmp(method, "PUT") == 0)||(strcmp(method, "POST") == 0)) //PUT или POST - значит обновление
 	{
-		Project *object = new Project(*(Project*)requestBody);
+		Sale *object = new Sale(*(Sale*)requestBody);
 
 		ObjectsContainer *result; //разбираюсь с внешними ключами:
-		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Lecturer(), L"name", object->lecturer); //со ссылкой на преподавателя
+		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Product(), L"name", object->product_name); //со ссылкой на преподавателя
 		if (result->next() == FALSE)
 			return throwAnException("Foreign key error: no such lecturer"); //не вернулось ни одного объекта - что-то пошло не так, бросаю исключение
-		Lecturer* related_object = (Lecturer*)(result->current());
-		object->lecturer_id = related_object->id;
-
-		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Student(), L"name", object->student); //и на студента
-		if (result->next() == FALSE) 
-			return throwAnException("Foreign key error: no such student");
-		Student* another_related_object = (Student*)(result->current());
-		object->student_id = another_related_object->id;
+		Product* related_object = (Product*)(result->current());
+		object->product_id = related_object->id;
 
 		DatabaseWrapper::instance()->updateObject(object);
 		return NULL;
 	}
+
 	if (strcmp(method, "DELETE") == 0) //DELETE - значит удаление
 	{
-		DatabaseWrapper::instance()->deleteObject(new Project(*(Project*)requestBody));
+		DatabaseWrapper::instance()->deleteObject(new Sale(*(Sale*)requestBody));
 		return NULL;
 	}
 }
 
-ObjectsContainer* ViewsCollection::groupProjects(char method[6], char* requestBody)
+ObjectsContainer* ViewsCollection::productSales(char *method, char *requestBody)(char method[6], char* requestBody)
 {
-	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"student_group", (LPCWSTR)requestBody);
+	return DatabaseWrapper::instance()->getObjectsByAttribute(new Sale(), L"product_name", (LPCWSTR)requestBody);
 }
 
-ObjectsContainer* ViewsCollection::lecturerProjects(char method[6], char* requestBody)
+static ObjectsContainer* ViewsCollection::productPurchases(char method[6], char* requestBody)
 {
-	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), L"lecturer", (LPCWSTR)requestBody);
+
 }
 
-ObjectsContainer* ViewsCollection::allStudents(char method[6], char* requestBody)
+ObjectsContainer* ViewsCollection::allPurchases(char* method, char* requestBody)
 {
-	if (strcmp(method, "GET") == 0)
-		return DatabaseWrapper::instance()->getObjects(new Student());
-	if (strcmp(method, "PUT") == 0)
+	if (strcmp(method, "GET") == 0) //GET - значит выборка
+		return DatabaseWrapper::instance()->getObjects(new Purchase());
+
+	if ((strcmp(method, "PUT") == 0)||(strcmp(method, "POST") == 0)) //PUT или POST - значит обновление
 	{
-		DatabaseWrapper::instance()->updateObject(new Student(*(Student*)requestBody));
+		Purchase *object = new Purchase(*(Purchase*)requestBody);
+
+		ObjectsContainer *result; //разбираюсь с внешними ключами:
+		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Asset(), L"name", object->asset_name); //со ссылкой на преподавателя
+		if (result->next() == FALSE)
+			return throwAnException("Foreign key error: no such lecturer"); //не вернулось ни одного объекта - что-то пошло не так, бросаю исключение
+		Asset* related_object = (Asset*)(result->current());
+		object->asset_id = related_object->id;
+
+		DatabaseWrapper::instance()->updateObject(object);
 		return NULL;
 	}
-	if (strcmp(method, "POST") == 0)
+
+	if (strcmp(method, "DELETE") == 0) //DELETE - значит удаление
 	{
-		DatabaseWrapper::instance()->updateObject(new Student(*(Student*)requestBody));
-		return NULL;
-	}
-	if (strcmp(method, "DELETE") == 0)
-	{
-		DatabaseWrapper::instance()->deleteObject(new Student(*(Student*)requestBody));
+		DatabaseWrapper::instance()->deleteObject(new Purchase(*(Purchase*)requestBody));
 		return NULL;
 	}
 }
 
-ObjectsContainer* ViewsCollection::allLecturers(char method[6], char* requestBody)
+ObjectsContainer* ViewsCollection::calculateProfitability(ObjectsContainer* sales, ObjectsContainer* purchases, LPCWSTR valueName)
 {
-	if (strcmp(method, "GET") == 0)
-		return DatabaseWrapper::instance()->getObjects(new Lecturer());
-	if (strcmp(method, "PUT") == 0)
+	int totalSpent, totalEarned;
+
+	Sale *sale;
+	while (sales->next())
 	{
-		DatabaseWrapper::instance()->updateObject(new Lecturer(*(Lecturer*)requestBody));
-		return NULL;
+		sale = (Sale*)sales->current();
+
+		totalEarned += sale->cost * sale->amount;
 	}
-	if (strcmp(method, "POST") == 0)
+
+	Purchase *purchase;
+	while (purchases->next())
 	{
-		DatabaseWrapper::instance()->updateObject(new Lecturer(*(Lecturer*)requestBody));
-		return NULL;
+		purchase = (Sale*)purchases->current();
+
+		totalSpent += purchase->cost * sale->amount;
 	}
-	if (strcmp(method, "DELETE") == 0)
-	{
-		DatabaseWrapper::instance()->deleteObject(new Lecturer(*(Lecturer*)requestBody));
-		return NULL;
-	}
+
+	float value = (totalEarned - totalSpent) / (float)totalSpent * 100;
+
+	ValueObject *packedValue;
+	wcscpy(packedValue->name, valueName);
+	swprintf(packedValue->value, L"%f", value);
+
+	ObjectsContainer *list = new ObjectsContainer();
+	list->append(packedValue);
+
+	return list;
+}
+
+ObjectsContainer* ViewsCollection::allProfitability(char method[6], char* requestBody)
+{
+	return calculateProfitability(
+		allSales(method, requestBody),
+		allPurchases(method, requestBody),
+		L"Общая рентабельность"
+	);
+}
+
+ObjectsContainer* ViewsCollection::productProfitability(char method[6], char* requestBody)
+{
+	return calculateProfitability(
+		productSales(method, requestBody),
+		productPurchases(method, requestBody),
+		L"Рентабельность наименования продукции"
+	);
 }
 
 ObjectsContainer* ViewsCollection::throwAnException(char* message)
