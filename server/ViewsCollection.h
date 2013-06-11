@@ -10,7 +10,7 @@ public:
 
 	static ObjectsContainer* allSales(char method[6], char* requestBody); //нужен для операций над курсовыми (выборка, добавление, etc)
 	static ObjectsContainer* productSales(char method[6], char* requestBody);
-	static ObjectsContainer* productPurchases(char method[6], char* requestBody, LPCWSTR valueName);
+	static ObjectsContainer* productPurchases(char method[6], char* requestBody);
 
 	static ObjectsContainer* allPurchases(char method[6], char* requestBody); //для операций над студентами
 
@@ -22,7 +22,7 @@ public:
 protected:
 	ViewsCollection(void);
 private:
-	static float calculateProfitability(ObjectsContainer* sales, ObjectsContainer* purchases);
+	static ObjectsContainer* calculateProfitability(ObjectsContainer* sales, ObjectsContainer* purchases, LPCWSTR valueName);
 	
 };
 

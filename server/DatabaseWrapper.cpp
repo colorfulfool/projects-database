@@ -38,7 +38,7 @@ ObjectsContainer* DatabaseWrapper::getObjects(DatabaseObject *object)
 
 ObjectsContainer* DatabaseWrapper::getRelatedObjects(DatabaseObject *object, LPCWSTR relatedName)
 {
-	WideCharToMultiByte(CP_UTF8, NULL, object->getSelectRelatedSQL(relatedName), 350, sqlQueryEncoded, 350, NULL, NULL);
+	WideCharToMultiByte(CP_UTF8, NULL, object->getRelatedByNameSQL(relatedName), 350, sqlQueryEncoded, 350, NULL, NULL);
 
 	return gatherQuriedObjects(object);
 }
@@ -71,8 +71,12 @@ ObjectsContainer* DatabaseWrapper::gatherQuriedObjects(DatabaseObject *type)
 
 void DatabaseWrapper::recreateDatabase()
 {
-	stmt->execute("CREATE TABLE IF NOT EXISTS `lecturer` (`name` varchar(100) NOT NULL, `id` int(10) NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`), UNIQUE KEY `name` (`name`)) DEFAULT CHARSET=utf8");
-
+	stmt->execute("CREATE TABLE IF NOT EXISTS `product` (  `name` varchar(100) NOT NULL,  `id` int(11) NOT NULL AUTO_INCREMENT,  PRIMARY KEY (`id`)) DEFAULT CHARSET=utf8");
+	stmt->execute("CREATE TABLE IF NOT EXISTS `sale` (  `id` int(11) NOT NULL AUTO_INCREMENT,  `product_id` int(10) NOT NULL,  `cost` int(10) unsigned NOT NULL DEFAULT '0',  `amount` int(10) unsigned NOT NULL DEFAULT '0',  PRIMARY KEY (`id`),  KEY `product_ref` (`product_id`),  CONSTRAINT `product_ref` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)) DEFAULT CHARSET=utf8");
+	stmt->execute("CREATE TABLE IF NOT EXISTS `asset` (  `name` varchar(100) NOT NULL,  `id` int(11) NOT NULL AUTO_INCREMENT,  PRIMARY KEY (`id`)) DEFAULT CHARSET=utf8");
+	stmt->execute("CREATE TABLE IF NOT EXISTS `purchase` (  `id` int(11) NOT NULL AUTO_INCREMENT,  `asset_id` int(10) NOT NULL,  `cost` int(10) unsigned NOT NULL DEFAULT '0',  `amount` int(10) unsigned NOT NULL DEFAULT '0',  PRIMARY KEY (`id`),  KEY `asset_ref` (`asset_id`),  CONSTRAINT `asset_ref` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`)) DEFAULT CHARSET=utf8");
+	stmt->execute("CREATE TABLE IF NOT EXISTS `product_asset` (  `id` int(11) NOT NULL AUTO_INCREMENT,  `asset_id` int(10) NOT NULL,  `product_id` int(10) NOT NULL,  `amount` int(10) unsigned NOT NULL DEFAULT '0',  PRIMARY KEY (`id`),  KEY `asset_ref` (`asset_id`),  KEY `product_ref` (`product_id`),  CONSTRAINT `m2m_asset_ref` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`),  CONSTRAINT `m2m_product_ref` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)) DEFAULT CHARSET=utf8");
+	
 	printf("Database structure has been recreated.");
 }
 

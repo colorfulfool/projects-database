@@ -145,12 +145,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\database-objects\Asset.h" />
     <ClInclude Include="..\database-objects\DatabaseObject.h" />
-    <ClInclude Include="..\database-objects\Lecturer.h" />
     <ClInclude Include="..\database-objects\ObjectsContainer.h" />
-    <ClInclude Include="..\database-objects\Project.h" />
+    <ClInclude Include="..\database-objects\Product.h" />
+    <ClInclude Include="..\database-objects\Purchase.h" />
+    <ClInclude Include="..\database-objects\Sale.h" />
     <ClInclude Include="..\database-objects\sqlstring.h" />
-    <ClInclude Include="..\database-objects\Student.h" />
+    <ClInclude Include="..\database-objects\ValueObject.h" />
     <ClInclude Include="..\ProtocolSpecification.h" />
     <ClInclude Include="DatabaseWrapper.h" />
     <ClInclude Include="RequestProcessor.h" />
@@ -159,11 +161,13 @@
     <ClInclude Include="ViewsCollection.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\database-objects\Asset.cpp" />
     <ClCompile Include="..\database-objects\DatabaseObject.cpp" />
-    <ClCompile Include="..\database-objects\Lecturer.cpp" />
     <ClCompile Include="..\database-objects\ObjectsContainer.cpp" />
-    <ClCompile Include="..\database-objects\Project.cpp" />
-    <ClCompile Include="..\database-objects\Student.cpp" />
+    <ClCompile Include="..\database-objects\Product.cpp" />
+    <ClCompile Include="..\database-objects\Purchase.cpp" />
+    <ClCompile Include="..\database-objects\Sale.cpp" />
+    <ClCompile Include="..\database-objects\ValueObject.cpp" />
     <ClCompile Include="DatabaseWrapper.cpp" />
     <ClCompile Include="RequestProcessor.cpp" />
     <ClCompile Include="server.cpp" />

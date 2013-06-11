@@ -42,16 +42,10 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void lecturerProjectsRequested();
-	afx_msg void groupProjectsRequested();
-	afx_msg void allProjectsRequested();
 	afx_msg void projectAddRequested();
 	afx_msg void projectUpdateRequested();
 	afx_msg void projectRemoveRequested();
-	afx_msg void studentAddRequested();
-	afx_msg void lecturerAddRequested();
 	afx_msg void fullReportRequested();
-	afx_msg void diagramRequested();
 
 	afx_msg void showError(WCHAR *message);
 	afx_msg void displayObjects(ObjectsContainer *list);
@@ -59,8 +53,7 @@ public:
 	void displayDiagram(ObjectsContainer *list);
 	void saveTextReport(ObjectsContainer *list);
 private:
-	CString lecturerName;
-	CString groupName;
+	CString productNameString;
 
 	projectDialog *dialog;
 	dataDialog *dataDialogPointer;
@@ -80,4 +73,13 @@ private:
 	char *bytes;
 	int currentID;
 	bool isSaleMode;
+public:
+	afx_msg void allPurchasesRequested();
+	afx_msg void allSalesRequested();
+	afx_msg void productPurchasesRequested();
+
+	afx_msg void productSalesRequested();
+
+	afx_msg void productProfitabilityRequested();
+	afx_msg void allProfitabilityRequested();
 };

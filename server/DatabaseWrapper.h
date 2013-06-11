@@ -34,8 +34,8 @@ private:
 	sql::Statement *stmt;
 	sql::ResultSet  *res;
 
-	WCHAR sqlQuery[100];
-	char sqlQueryEncoded[100];
+	WCHAR sqlQuery[300];
+	char sqlQueryEncoded[300];
 
 	ObjectsContainer* gatherQuriedObjects(DatabaseObject *type); //собирает результаты запроса в контейнер в виде объектов
 };

@@ -1,6 +1,8 @@
 #include "ViewsCollection.h"
 #include "DatabaseWrapper.h"
 #include "ObjectsContainer.h"
+#include "Product.h"
+#include "Asset.h"
 #include "Sale.h"
 #include "Purchase.h"
 #include "ValueObject.h"
@@ -42,12 +44,12 @@ ObjectsContainer* ViewsCollection::allSales(char* method, char* requestBody)
 	}
 }
 
-ObjectsContainer* ViewsCollection::productSales(char *method, char *requestBody)(char method[6], char* requestBody)
+ObjectsContainer* ViewsCollection::productSales(char *method, char *requestBody)
 {
 	return DatabaseWrapper::instance()->getObjectsByAttribute(new Sale(), L"product_name", (LPCWSTR)requestBody);
 }
 
-static ObjectsContainer* ViewsCollection::productPurchases(char method[6], char* requestBody)
+ObjectsContainer* ViewsCollection::productPurchases(char method[6], char* requestBody)
 {
 	return DatabaseWrapper::instance()->getRelatedObjects(new Purchase(), (LPCWSTR)requestBody);
 }
@@ -94,7 +96,7 @@ ObjectsContainer* ViewsCollection::calculateProfitability(ObjectsContainer* sale
 	Purchase *purchase;
 	while (purchases->next())
 	{
-		purchase = (Sale*)purchases->current();
+		purchase = (Purchase*)purchases->current();
 
 		totalSpent += purchase->cost * sale->amount;
 	}
@@ -113,7 +115,7 @@ ObjectsContainer* ViewsCollection::calculateProfitability(ObjectsContainer* sale
 
 ObjectsContainer* ViewsCollection::allProfitability(char method[6], char* requestBody)
 {
-	return calculateProfitability(
+	return ViewsCollection::calculateProfitability(
 		allSales(method, requestBody),
 		allPurchases(method, requestBody),
 		L"Общая рентабельность"
@@ -122,7 +124,7 @@ ObjectsContainer* ViewsCollection::allProfitability(char method[6], char* reques
 
 ObjectsContainer* ViewsCollection::productProfitability(char method[6], char* requestBody)
 {
-	return calculateProfitability(
+	return ViewsCollection::calculateProfitability(
 		productSales(method, requestBody),
 		productPurchases(method, requestBody),
 		L"Рентабельность наименования продукции"

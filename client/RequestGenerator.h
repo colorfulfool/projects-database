@@ -34,8 +34,8 @@ public:
 
 	void addSale(LPCWSTR product_name, int amount, int cost);
 	void addPurchase(LPCWSTR asset_name, int amount, int cost);
-	void editSale(LPCWSTR product_name, int amount, int cost);
-	void editPurchase(LPCWSTR asset_name, int amount, int cost);
+	void editSale(int id, LPCWSTR product_name, int amount, int cost);
+	void editPurchase(int id, LPCWSTR asset_name, int amount, int cost);
 
 	void removePurchase(int id);
 	void removeSale(int id);

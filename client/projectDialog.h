@@ -22,15 +22,9 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CString task;
-	CString subject;
-	int completeness;
-	CString student;
-	CString lecturer;
-	CString dueTo;
 	CString name;
-	CString group;
-
+	int amount;
+	int cost;
 
 	afx_msg void sendRequested();
 };

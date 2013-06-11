@@ -12,11 +12,10 @@
 
 CclientDlg::CclientDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CclientDlg::IDD, pParent)
-	, lecturerName(_T(""))
-	, groupName(_T(""))
 	, connectionStateEdit(_T(""))
 	, addressEdit(_T(""))
 	, portEdit(_T(""))
+	, productNameString(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -24,10 +23,9 @@ CclientDlg::CclientDlg(CWnd* pParent /*=NULL*/)
 void CclientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, lecturerEdit, lecturerName);
-	DDX_Text(pDX, groupEdit, groupName);
 	DDX_Text(pDX, duna, connectionStateEdit);
 	DDX_Text(pDX, IDC_EDIT1, addressEdit);
+	DDX_Text(pDX, productNameEdit, productNameString);
 	DDX_Control(pDX, tableEdit, table);
 }
 
@@ -35,15 +33,11 @@ BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 //	ON_BN_CLICKED(IDC_BUTTON1, &CclientDlg::lecturerProjectsRequested)
-	ON_BN_CLICKED(IDC_BUTTON2, &CclientDlg::groupProjectsRequested)
 //	ON_BN_CLICKED(IDC_BUTTON3, &CclientDlg::allProjectsRequested)
 	ON_BN_CLICKED(IDC_BUTTON4, &CclientDlg::projectAddRequested)
 	ON_BN_CLICKED(IDC_BUTTON5, &CclientDlg::projectUpdateRequested)
 	ON_BN_CLICKED(IDC_BUTTON6, &CclientDlg::projectRemoveRequested)
-	ON_COMMAND(ID_32772, &CclientDlg::studentAddRequested)
-	ON_COMMAND(ID_32773, &CclientDlg::lecturerAddRequested)
 	ON_COMMAND(ID_32774, &CclientDlg::fullReportRequested)
-	ON_COMMAND(ID_32775, &CclientDlg::diagramRequested)
 	ON_BN_CLICKED(sendButton, &CclientDlg::projectAddCompleted)
 	ON_BN_CLICKED(IDC_BUTTON7, &CclientDlg::serverConnectRequested)
 	ON_BN_CLICKED(IDC_BUTTON8, &CclientDlg::productPurchasesRequested)
@@ -217,9 +211,9 @@ void CclientDlg::displayObjects(ObjectsContainer *list)
 		swprintf(numbersTemp, L"%d", object->id);
 		int newRow = table.InsertItem(row, numbersTemp);
 		if (isSaleMode)
-			table.SetItemText(newRow, 1, object->product_name);
+			table.SetItemText(newRow, 1, object->related_name());
 		else
-			table.SetItemText(newRow, 1, object->asset_name);
+			table.SetItemText(newRow, 1, object->related_name());
 		swprintf(numbersTemp, L"%d", object->amount);
 		swprintf(numbersTemp, L"%d", object->cost);
 
@@ -256,14 +250,14 @@ void CclientDlg::saveTextReport(ObjectsContainer *list)
 {
 	FILE *report = fopen("report.csv", "w, ccs=UTF-8");
 
-	fwprintf(report, L"Задание\tПредмет\tСрок сдачи\tГотовность\tПреподаватель\tСтудент\n");
+	fwprintf(report, L"Наименование\tКоличество\tЦена за единицу\n");
 
-	Project *object;
+	Sale *object;
 	while (list->next())
 	{
-		object = (Project*)list->current();
+		object = (Sale*)list->current();
 
-		fwprintf(report, L"%s\t%s\t%s\t%d\t%s\t%s\n", object->task, object->subject, object->dueTo, object->completeness, object->lecturer, object->student);
+		fwprintf(report, L"%s\t%d\t%d\n", object->product_name, object->cost, object->amount);
 	}
 
 	fclose(report);
@@ -275,8 +269,8 @@ void CclientDlg::productPurchasesRequested()
 {
 	isSaleMode = 0;
 
-	updateData(TRUE);
-	RequestGenerator::instance()->productPurchases(productNameEdit.GetString());
+	UpdateData(TRUE);
+	RequestGenerator::instance()->productPurchases(productNameString.GetString());
 }
 
 
@@ -292,16 +286,16 @@ void CclientDlg::productSalesRequested()
 {
 	isSaleMode = 1;
 
-	updateData(TRUE);
-	RequestGenerator::instance()->productSales(productNameEdit.GetString());
+	UpdateData(TRUE);
+	RequestGenerator::instance()->productSales(productNameString.GetString());
 }
 
 
 void CclientDlg::productProfitabilityRequested()
 {
-	updateData(TRUE);
-	RequestGenerator::instance()->productProfitability(productNameEdit.GetString());
-
+	UpdateData(TRUE);
+	RequestGenerator::instance()->productProfitability(productNameString.GetString());
+}
 
 void CclientDlg::allProfitabilityRequested()
 {
@@ -313,6 +307,6 @@ void CclientDlg::allPurchasesRequested()
 {
 	isSaleMode = 0;
 
-	updateData(TRUE);
+	UpdateData(TRUE);
 	RequestGenerator::instance()->allPurchases();
 }

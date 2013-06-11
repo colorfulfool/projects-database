@@ -36,19 +36,25 @@
     <ClInclude Include="..\database-objects\DatabaseObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\database-objects\Project.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\database-objects\sqlstring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\database-objects\ObjectsContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\database-objects\Lecturer.h">
+    <ClInclude Include="..\database-objects\Product.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\database-objects\Student.h">
+    <ClInclude Include="..\database-objects\Asset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\database-objects\Purchase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\database-objects\Sale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\database-objects\ValueObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,16 +77,22 @@
     <ClCompile Include="..\database-objects\DatabaseObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\database-objects\Project.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\database-objects\ObjectsContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\database-objects\Lecturer.cpp">
+    <ClCompile Include="..\database-objects\Product.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\database-objects\Student.cpp">
+    <ClCompile Include="..\database-objects\Purchase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\database-objects\Asset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\database-objects\Sale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\database-objects\ValueObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

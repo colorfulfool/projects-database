@@ -40,7 +40,7 @@ LPWSTR DatabaseObject::getSelectObjectSQL()
 	return L"Not implemented";
 }
 
-LPWSTR DatabaseObject::getRelatedByNameSQL(LPWSTR name)
+LPWSTR DatabaseObject::getRelatedByNameSQL(LPCWSTR name)
 {
 	return L"Not implemented";
 }

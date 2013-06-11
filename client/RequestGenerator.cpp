@@ -1,9 +1,9 @@
 #include "RequestGenerator.h"
 #include "DatabaseObject.h"
-#include "Project.h"
 #include "ObjectsContainer.h"
-#include "Lecturer.h"
-#include "Student.h"
+#include "Sale.h"
+#include "Purchase.h"
+// #include "Product.h"
 
 RequestGenerator::RequestGenerator(void)
 {
@@ -95,7 +95,7 @@ void RequestGenerator::productSales(LPCWSTR productName)
 
 	if (result.size != 0)
 	{
-		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
+		ObjectsContainer *objects = new ObjectsContainer(new Sale(), result.size);
 		objects->setDataPointer(result.body);
 
 		mainForm->displayObjects(objects);
@@ -108,7 +108,7 @@ void RequestGenerator::productPurchases(LPCWSTR productName)
 
 	if (result.size != 0)
 	{
-		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
+		ObjectsContainer *objects = new ObjectsContainer(new Purchase(), result.size);
 		objects->setDataPointer(result.body);
 
 		mainForm->displayObjects(objects);
@@ -121,7 +121,7 @@ void RequestGenerator::allSales()
 
 	if (result.size != 0)
 	{
-		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
+		ObjectsContainer *objects = new ObjectsContainer(new Sale(), result.size);
 		objects->setDataPointer(result.body);
 
 		mainForm->displayObjects(objects);
@@ -134,7 +134,7 @@ void RequestGenerator::allPurchases()
 
 	if (result.size != 0)
 	{
-		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
+		ObjectsContainer *objects = new ObjectsContainer(new Purchase(), result.size);
 		objects->setDataPointer(result.body);
 
 		mainForm->displayObjects(objects);
@@ -154,19 +154,20 @@ void RequestGenerator::addSale(LPCWSTR product_name, int amount, int cost)
 
 void RequestGenerator::addPurchase(LPCWSTR asset_name, int amount, int cost)
 {
-	Sale *newOne = new Sale();
+	Purchase *newOne = new Purchase();
 
 	wcscpy(newOne->asset_name, asset_name);
 	newOne->amount = amount;
 	newOne->cost = cost;
 
-	sendRequest("POST", "/purchase", (char*)newOne, sizeof(Sale));
+	sendRequest("POST", "/purchase", (char*)newOne, sizeof(Purchase));
 }
 
-void RequestGenerator::editSale(LPCWSTR product_name, int amount, int cost)
+void RequestGenerator::editSale(int id, LPCWSTR product_name, int amount, int cost)
 {
 	Sale *newOne = new Sale();
 
+	newOne->id = id;
 	wcscpy(newOne->product_name, product_name);
 	newOne->amount = amount;
 	newOne->cost = cost;
@@ -174,15 +175,16 @@ void RequestGenerator::editSale(LPCWSTR product_name, int amount, int cost)
 	sendRequest("PUT", "/sale", (char*)newOne, sizeof(Sale));
 }
 
-void RequestGenerator::editPurchase(LPCWSTR asset_name, int amount, int cost)
+void RequestGenerator::editPurchase(int id, LPCWSTR asset_name, int amount, int cost)
 {
-	Sale *newOne = new Sale();
+	Purchase *newOne = new Purchase();
 
+	newOne->id = id;
 	wcscpy(newOne->asset_name, asset_name);
 	newOne->amount = amount;
 	newOne->cost = cost;
 
-	sendRequest("PUT", "/purchase", (char*)newOne, sizeof(Sale));
+	sendRequest("PUT", "/purchase", (char*)newOne, sizeof(Purchase));
 }
 
 void RequestGenerator::allProfitability()
@@ -240,7 +242,7 @@ void RequestGenerator::fullReport()
 
 	if (result.size != 0)
 	{
-		ObjectsContainer *objects = new ObjectsContainer(new Project(), result.size);
+		ObjectsContainer *objects = new ObjectsContainer(new Sale(), result.size);
 		objects->setDataPointer(result.body);
 
 		mainForm->saveTextReport(objects);
