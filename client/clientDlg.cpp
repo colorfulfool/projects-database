@@ -47,6 +47,7 @@ BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON9, &CclientDlg::productProfitabilityRequested)
 	ON_BN_CLICKED(IDC_BUTTON3, &CclientDlg::allProfitabilityRequested)
 	ON_BN_CLICKED(IDC_BUTTON10, &CclientDlg::allPurchasesRequested)
+	ON_BN_CLICKED(IDC_BUTTON11, &CclientDlg::OnBnClickedButton11)
 END_MESSAGE_MAP()
 
 
@@ -215,7 +216,9 @@ void CclientDlg::displayObjects(ObjectsContainer *list)
 		else
 			table.SetItemText(newRow, 1, object->related_name());
 		swprintf(numbersTemp, L"%d", object->amount);
+		table.SetItemText(newRow, 2, numbersTemp);
 		swprintf(numbersTemp, L"%d", object->cost);
+		table.SetItemText(newRow, 3, numbersTemp);
 
 		row++;
 	}
@@ -228,7 +231,9 @@ void CclientDlg::displayValue(ObjectsContainer *list)
 	list->next();
 	ValueObject *value = (ValueObject*)list->current(); //беру единственный объект
 
-	this->MessageBox(value->value, value->name, MB_ICONINFORMATION);
+	WCHAR messageBoxText[200];
+	swprintf(messageBoxText, L"%s: %s", value->name, value->value);
+	this->MessageBox(messageBoxText, value->name, MB_ICONINFORMATION);
 }
 
 void CclientDlg::serverConnectRequested()
@@ -250,14 +255,14 @@ void CclientDlg::saveTextReport(ObjectsContainer *list)
 {
 	FILE *report = fopen("report.csv", "w, ccs=UTF-8");
 
-	fwprintf(report, L"Наименование\tКоличество\tЦена за единицу\n");
+	fwprintf(report, L"Наименование;Количество;Цена за единицу\n");
 
 	Sale *object;
 	while (list->next())
 	{
 		object = (Sale*)list->current();
 
-		fwprintf(report, L"%s\t%d\t%d\n", object->product_name, object->cost, object->amount);
+		fwprintf(report, L"%s;%d;%d\n", object->product_name, object->cost, object->amount);
 	}
 
 	fclose(report);
@@ -309,4 +314,10 @@ void CclientDlg::allPurchasesRequested()
 
 	UpdateData(TRUE);
 	RequestGenerator::instance()->allPurchases();
+}
+
+
+void CclientDlg::OnBnClickedButton11()
+{
+	allPurchasesRequested();
 }

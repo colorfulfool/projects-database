@@ -27,7 +27,7 @@ ObjectsContainer* ViewsCollection::allSales(char* method, char* requestBody)
 		Sale *object = new Sale(*(Sale*)requestBody);
 
 		ObjectsContainer *result; //разбираюсь с внешними ключами:
-		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Product(), L"name", object->product_name); //со ссылкой на преподавателя
+		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Product(), L"name", object->product_name);
 		if (result->next() == FALSE)
 			return throwAnException("Foreign key error: no such lecturer"); //не вернулось ни одного объекта - что-то пошло не так, бросаю исключение
 		Product* related_object = (Product*)(result->current());
@@ -83,7 +83,7 @@ ObjectsContainer* ViewsCollection::allPurchases(char* method, char* requestBody)
 
 ObjectsContainer* ViewsCollection::calculateProfitability(ObjectsContainer* sales, ObjectsContainer* purchases, LPCWSTR valueName)
 {
-	int totalSpent, totalEarned;
+	int totalSpent=0, totalEarned=0;
 
 	Sale *sale;
 	while (sales->next())
@@ -103,9 +103,9 @@ ObjectsContainer* ViewsCollection::calculateProfitability(ObjectsContainer* sale
 
 	float value = (totalEarned - totalSpent) / (float)totalSpent * 100;
 
-	ValueObject *packedValue;
+	ValueObject *packedValue = new ValueObject();
 	wcscpy(packedValue->name, valueName);
-	swprintf(packedValue->value, L"%f", value);
+	swprintf(packedValue->value, L"%f%", value);
 
 	ObjectsContainer *list = new ObjectsContainer();
 	list->append(packedValue);

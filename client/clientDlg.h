@@ -82,4 +82,5 @@ public:
 
 	afx_msg void productProfitabilityRequested();
 	afx_msg void allProfitabilityRequested();
+	afx_msg void OnBnClickedButton11();
 };

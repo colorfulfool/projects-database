@@ -18,11 +18,12 @@ void RequestProcessor::displatchRequest(RequestHeader *header, char* body)
 	
 	printf("%s %s -> ", header->method, header->URI);
 
+	if (strcmp(usecase, "/purchase")==0) responseDecorator(ViewsCollection::allPurchases, header, body); //перебираю представления в поисках подходящего
 	if (strcmp(usecase, "/sale")==0) responseDecorator(ViewsCollection::allSales, header, body); //перебираю представления в поисках подходящего
 	if (strcmp(usecase, "/sale/product")==0) responseDecorator(ViewsCollection::productSales, header, body);
 	if (strcmp(usecase, "/purchase/product")==0) responseDecorator(ViewsCollection::productPurchases, header, body);
-	if (strcmp(usecase, "/profitabitily")==0) responseDecorator(ViewsCollection::allProfitability, header, body);
-	if (strcmp(usecase, "/profitabitily/product")==0) responseDecorator(ViewsCollection::productProfitability, header, body);
+	if (strcmp(usecase, "/profitability")==0) responseDecorator(ViewsCollection::allProfitability, header, body);
+	if (strcmp(usecase, "/profitability/product")==0) responseDecorator(ViewsCollection::productProfitability, header, body);
 }
 
 void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *header, char* body)
@@ -35,7 +36,7 @@ void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *heade
 	{
 		responseBody = view(header->method, body);
 
-		if (strcmp((char*)responseBody, "FAIL")==0)
+		if ( (responseBody != NULL) && (strcmp((char*)responseBody, "FAIL")==0) )
 		{
 			char *msg = (char*)responseBody + 5;
 			std::string *messagePacked = new std::string(msg);
