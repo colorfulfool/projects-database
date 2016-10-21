@@ -4,7 +4,7 @@ MySQL после установки предложит себя настроит
 
 Там же есть скрипт create-and-populate.sql, который создает таблицы в базе и добавляет в них немного записей. Для его исполнения можно воспользоваться скриптом execute-sql.bat, а можно и прямо из консоли:
 
-    "C:\Program Files\MySQL\MySQL Server 5.5\bin\mysql.exe" --user=root --password=password &lt; setup\create-and-populate.sql
+    "C:\Program Files\MySQL\MySQL Server 5.5\bin\mysql.exe" --user=root --password=password < setup\create-and-populate.sql
 
 ---
 
