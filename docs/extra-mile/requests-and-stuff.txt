@@ -1,0 +1,55 @@
+1. Получение всех курсовых проектов
+
+SELECT * FROM `project`
+
+2. Получение всех курсовых проектов вместе с именами участвующих студентов и преподавателей
+
+SELECT project.id, task, subject, dueTo, completeness, student_id, lecturer_id, lecturer.name AS lecturer, student.name AS student 
+FROM `project` 
+INNER JOIN `lecturer` ON project.lecturer_id=lecturer.id 
+INNER JOIN `student` ON project.student_id=student.id
+
+3. Получение курсовых проектов, выполняемых студентами определенной группы (123456)
+
+SELECT * FROM
+(SELECT project.id, task, subject, dueTo, completeness, student.name AS student, student.group AS student_group
+FROM `project`
+INNER JOIN `student` ON project.student_id=student.id)
+WHERE student_group = 123456
+
+4. Получение конкретного курсового (по номеру)
+
+SELECT * FROM `student` WHERE `id` = 2
+
+5. Добавление студента в базу данных
+
+INSERT INTO `student` (`name`, `group`) VALUES ('Имярек', '123456')
+
+6. Обновление информации о курсовом проекте
+
+UPDATE `project` SET `task`='Учет курсовых', `dueTo`='2012-12-21', `subject`='ООП', `completeness`=100, `student_id`=1, `lecturer_id`=1 WHERE `id` = 2
+
+Хранимая процедура. Количество работ, не сданных в срок (на данный момент)
+
+CREATE PROCEDURE count_overdue_projects AS
+SELECT COUNT(`id`) FROM `project` WHERE `dueTo` > GETDATE()
+
+Триггер. По каким-то причинам студенту заменили тему курсового - этот факт отмечается в отдельной таблице.
+
+CREATE TABLE replaced_tasks
+(
+	id int(10) AUTO_INCREMENT,
+	project_id int(10),
+	old_task VARCHAR(100),
+	new_task VARCHAR(100),
+	when_changed date,
+	PRIMARY KEY (id),
+	FOREIGN KEY project_id REFERENCES project (id)
+);
+
+CREATE TRIGGER project_task_replaced FOR UPDATE ON project
+AS
+IF NOT inserted.task = deleted.task -- если новая тема отличается от старой
+INSERT INTO replaced_tasks (project_id, old_task, new_task, when_changed)
+SELECT deleted.id, deleted.task, inserted.task, GETDATE()
+FROM deleted, inserted;

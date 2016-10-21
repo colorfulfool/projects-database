@@ -1,0 +1,303 @@
+\section{Листинги}
+
+\subsection{Алгоритмы, реализующие бизнес-логику}
+\subsubsection{Операции с курсовыми (получение, добавление, удаление, обновление)}
+\begin{minted}{cpp}
+ObjectsContainer* ViewsCollection::allProjects(char* method, char* requestBody)
+{
+	if (strcmp(method, "GET") == 0) //GET - значит выборка
+		return DatabaseWrapper::instance()->getObjects(new Project());
+	if ((strcmp(method, "PUT") == 0)||(strcmp(method, "POST") == 0)) 
+	//PUT или POST - значит обновление
+	{
+		Project *object = new Project(*(Project*)requestBody);
+
+		ObjectsContainer *result; //разбираюсь с внешними ключами:
+		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Lecturer(), 
+		L"name", object->lecturer); //со ссылкой на преподавателя
+		if (result->next() == FALSE) throwAnException("Foreign key error: no such 
+		lecturer"); //не вернулось ни одного объекта - что-то пошло не так, 
+		бросаю исключение
+		Lecturer* related_object = (Lecturer*)(result->current());
+		object->lecturer_id = related_object->id;
+
+		result = DatabaseWrapper::instance()->getObjectsByAttribute(new Student(), 
+		L"name", object->student); //и на студента
+		if (result->next() == FALSE) throwAnException("Foreign key error: no such 
+		student");
+		Student* another_related_object = (Student*)(result->current());
+		object->student_id = another_related_object->id;
+
+		DatabaseWrapper::instance()->updateObject(object);
+		return NULL;
+	}
+	if (strcmp(method, "DELETE") == 0) //DELETE - значит удаление
+	{
+		DatabaseWrapper::instance()->deleteObject(new Project(*(Project*)requestBody));
+		return NULL;
+	}
+}
+\end{minted}
+
+\subsubsection{Выборка курсовых по группе или преподавателю}
+\begin{minted}{cpp}
+ObjectsContainer* ViewsCollection::groupProjects(char method[6], 
+char* requestBody)
+{
+	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), 
+	L"student_group", (LPCWSTR)requestBody);
+}
+
+ObjectsContainer* ViewsCollection::lecturerProjects(char method[6],
+char* requestBody)
+{
+	return DatabaseWrapper::instance()->getObjectsByAttribute(new Project(), 
+	L"lecturer", (LPCWSTR)requestBody);
+}
+\end{minted}
+
+\subsubsection{Операции со студентами}
+\begin{minted}{cpp}
+ObjectsContainer* ViewsCollection::allStudents(char method[6], char* requestBody)
+{
+	if (strcmp(method, "GET") == 0)
+		return DatabaseWrapper::instance()->getObjects(new Student());
+	if (strcmp(method, "PUT") == 0)
+	{
+		DatabaseWrapper::instance()->updateObject(new Student(
+		*(Student*)requestBody));
+		return NULL;
+	}
+	if (strcmp(method, "POST") == 0)
+	{
+		DatabaseWrapper::instance()->updateObject(new Student(
+		*(Student*)requestBody));
+		return NULL;
+	}
+	if (strcmp(method, "DELETE") == 0)
+	{
+		DatabaseWrapper::instance()->deleteObject(new Student(
+		*(Student*)requestBody));
+		return NULL;
+	}
+}
+\end{minted}
+
+\subsubsection{Опреации с преподавателями}
+\begin{minted}{cpp}
+ObjectsContainer* ViewsCollection::allLecturers(char method[6], char* requestBody)
+{
+	if (strcmp(method, "GET") == 0)
+		return DatabaseWrapper::instance()->getObjects(new Lecturer());
+	if (strcmp(method, "PUT") == 0)
+	{
+		DatabaseWrapper::instance()->updateObject(new Lecturer(
+		*(Lecturer*)requestBody));
+		return NULL;
+	}
+	if (strcmp(method, "POST") == 0)
+	{
+		DatabaseWrapper::instance()->updateObject(new Lecturer(
+		*(Lecturer*)requestBody));
+		return NULL;
+	}
+	if (strcmp(method, "DELETE") == 0)
+	{
+		DatabaseWrapper::instance()->deleteObject(new Lecturer(
+		*(Lecturer*)requestBody));
+		return NULL;
+	}
+}
+\end{minted}
+
+\subsection{Основные элементы программы}
+\subsubsection{Основной цикл сервера}
+\begin{minted}{cpp}
+while (1) //начинаю обрабатывать запросы
+{
+	working_socket = accept(listening_socket, (struct sockaddr *)&client_address, 
+	&size_of_address); //принимаю подключение клиента
+
+	printf("Client %s connected.\n", inet_ntoa(client_address.sin_addr));
+	_beginthread(client_thread, 0, (void*)working_socket);
+}
+\end{minted}
+
+\subsubsection{Обработка запроса}
+\begin{minted}{cpp}
+void client_thread(void *socket_to_use)
+{
+	RequestProcessor *newProcessor = new RequestProcessor((int)socket_to_use); 
+	//новый Processor будет обрабатывать запросы
+	newProcessor->mainLoopIteration();
+
+	delete newProcessor; //клиент отключился - удаляю Processor, завершаю поток
+	closesocket((int)socket_to_use);
+
+	return;
+}
+\end{minted}
+\begin{minted}{cpp}
+int RequestProcessor::mainLoopIteration()
+{
+	while (1)
+	{
+		RequestHeader *header = new RequestHeader();
+		if (recv(working_socket, (char*)header, sizeof(RequestHeader), NULL) >= 0) 
+		//принимаю заголовок
+		{
+			char *body;
+			if (header->bodySize > 0)
+			{
+				body = (char*)malloc(header->bodySize);
+				recv(working_socket, body, header->bodySize, NULL); 
+				//принимаю тело запроса
+			} else {
+				body = 0;
+			}
+
+			displatchRequest(header, body);
+		} else {
+			break;
+		}
+	}
+
+	return 0;
+}
+\end{minted}
+
+\subsubsection{Выбор функции для выполения запроса}
+\begin{minted}{cpp}
+void RequestProcessor::displatchRequest(RequestHeader *header, char* body)
+{
+	char* usecase = header->URI;
+	
+	printf("%s %s -> ", header->method, header->URI);
+
+	if (strcmp(usecase, "/project")==0) responseDecorator(ViewsCollection::allProjects, 
+	header, body); //перебираю представления в поисках подходящего
+	if (strcmp(usecase, "/project/lecturer")==0) responseDecorator(
+	ViewsCollection::lecturerProjects, header, body);
+	if (strcmp(usecase, "/project/group")==0) responseDecorator(
+	ViewsCollection::groupProjects, header, body);
+	if (strcmp(usecase, "/lecturer")==0) responseDecorator(
+	ViewsCollection::allLecturers, header, body);
+	if (strcmp(usecase, "/student")==0) responseDecorator(
+	ViewsCollection::allStudents, header, body);
+}
+\end{minted}
+
+\subsubsection{Формирование ответа}
+\begin{minted}{cpp}
+void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *header,
+char* body)
+{
+	ObjectsContainer *responseBody;
+	ResponseHeader *response = new ResponseHeader();
+	strcpy(response->URI, header->URI);
+
+	try
+	{
+		responseBody = view(header->method, body);
+
+		strcpy(response->status, "OK");
+
+		if (responseBody != NULL) //сервер что-то возвращает
+		{
+			response->bodySize = responseBody->totalSize();
+			sendResponse(response, responseBody->dataPointer());
+		} else { //сервер не возвращает ничего (значит, и не надо)
+			response->bodySize = 0;
+			sendResponse(response, NULL);
+		}
+	} catch (sql::SQLException &error) {
+		strcpy(response->status, "FAIL");
+		response->bodySize = strlen(error.what())+1;
+
+		sendResponse(response, (char*)error.what());
+	}
+}
+\end{minted}
+
+\subsubsection{Отправка запроса и обработка ответа (на стороне клиента)}
+\begin{minted}{cpp}
+ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* body, 
+int bodySize)
+{
+	RequestHeader *header = new RequestHeader; //заголовок запроса
+
+	strcpy(header->method, method);
+	strcpy(header->URI, URI);
+	header->bodySize = bodySize;
+
+	send(socket_id, (char*)header, sizeof(RequestHeader), NULL);
+	send(socket_id, body, bodySize, NULL);
+
+
+	ResponseHeader *response = new ResponseHeader;
+	recv(socket_id, (char*)response, sizeof(RequestHeader), NULL); 
+	//принимаю заголовок ответа
+
+	char *responseBody = (char*)malloc(response->bodySize);
+	if (response->bodySize > 0)
+		recv(socket_id, (char*)responseBody, response->bodySize, NULL);
+
+	ResponseBody resp;
+	if (strcmp(response->status, "OK") == 0)
+	{
+		resp.body = responseBody;
+		resp.size = response->bodySize;
+
+		return resp;
+	} else if (strcmp(response->status, "FAIL") == 0) //если произошла ошибка
+	{
+		WCHAR *messageEncoded = (WCHAR*)calloc(response->bodySize, sizeof(WCHAR));
+		mbstowcs(messageEncoded, responseBody, response->bodySize);
+		mainForm->showError(messageEncoded); //показываю сообщение об этом
+		
+		resp.size = 0;
+		return resp; //нуждается а проверке
+	} else {
+		mainForm->showError(L"Непонятный ответ сервера.");
+		
+		resp.size = 0;
+		return resp;
+	}
+}
+\end{minted}
+
+\subsection{Скрипт генерации базы данных}
+\begin{minted}{sql}
+CREATE DATABASE IF NOT EXISTS `projects-database`;
+USE `projects-database`;
+
+CREATE TABLE IF NOT EXISTS `student` (
+  `name` varchar(100) NOT NULL,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `group` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `lecturer` (
+  `name` varchar(100) NOT NULL,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `project` (
+  `task` varchar(100) NOT NULL,
+  `dueTo` date NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subject` varchar(50) NOT NULL,
+  `completeness` int(10) unsigned NOT NULL DEFAULT '0',
+  `student_id` int(10) NOT NULL,
+  `lecturer_id` int(10) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `student_ref` (`student_id`),
+  KEY `lecturer_ref` (`lecturer_id`),
+  CONSTRAINT `lecturer_ref` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturer` (`id`),
+  CONSTRAINT `student_ref` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`)
+) DEFAULT CHARSET=utf8;
+\end{minted}
