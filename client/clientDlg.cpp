@@ -51,7 +51,7 @@ BEGIN_MESSAGE_MAP(CclientDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// обработчики сообщений CclientDlg
+// РѕР±СЂР°Р±РѕС‚С‡РёРєРё СЃРѕРѕР±С‰РµРЅРёР№ CclientDlg
 
 BOOL CclientDlg::OnInitDialog()
 {
@@ -59,40 +59,40 @@ BOOL CclientDlg::OnInitDialog()
 
 	//addressEdit.SetString(L"127.0.0.1");
 
-	// Задает значок для этого диалогового окна. Среда делает это автоматически,
-	//  если главное окно приложения не является диалоговым
-	//SetIcon(m_hIcon, TRUE);			// Крупный значок
-	//SetIcon(m_hIcon, FALSE);		// Мелкий значок
+	// Р—Р°РґР°РµС‚ Р·РЅР°С‡РѕРє РґР»СЏ СЌС‚РѕРіРѕ РґРёР°Р»РѕРіРѕРІРѕРіРѕ РѕРєРЅР°. РЎСЂРµРґР° РґРµР»Р°РµС‚ СЌС‚Рѕ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё,
+	//  РµСЃР»Рё РіР»Р°РІРЅРѕРµ РѕРєРЅРѕ РїСЂРёР»РѕР¶РµРЅРёСЏ РЅРµ СЏРІР»СЏРµС‚СЃСЏ РґРёР°Р»РѕРіРѕРІС‹Рј
+	//SetIcon(m_hIcon, TRUE);			// РљСЂСѓРїРЅС‹Р№ Р·РЅР°С‡РѕРє
+	//SetIcon(m_hIcon, FALSE);		// РњРµР»РєРёР№ Р·РЅР°С‡РѕРє
 
 	mainMenu.LoadMenuW(IDR_MENU1);
 	SetMenu(&mainMenu);
 
-	connectionStateEdit.SetString(L"На данный момент: нет подключения");
+	connectionStateEdit.SetString(L"РќР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚: РЅРµС‚ РїРѕРґРєР»СЋС‡РµРЅРёСЏ");
 	addressEdit.SetString(L"127.0.0.1");
 
 	table.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 	table.InsertColumn(0, L"id");
-	table.InsertColumn(1, L"Наименование");
+	table.InsertColumn(1, L"РќР°РёРјРµРЅРѕРІР°РЅРёРµ");
 	table.SetColumnWidth(1, 150);
-	table.InsertColumn(2, L"Количество");
+	table.InsertColumn(2, L"РљРѕР»РёС‡РµСЃС‚РІРѕ");
 	table.SetColumnWidth(2, 50);
-	table.InsertColumn(3, L"Цена за единицу");
+	table.InsertColumn(3, L"Р¦РµРЅР° Р·Р° РµРґРёРЅРёС†Сѓ");
 	table.SetColumnWidth(3, 50);
 
 	UpdateData(FALSE);
 	
-	return TRUE;  // возврат значения TRUE, если фокус не передан элементу управления
+	return TRUE;  // РІРѕР·РІСЂР°С‚ Р·РЅР°С‡РµРЅРёСЏ TRUE, РµСЃР»Рё С„РѕРєСѓСЃ РЅРµ РїРµСЂРµРґР°РЅ СЌР»РµРјРµРЅС‚Сѓ СѓРїСЂР°РІР»РµРЅРёСЏ
 }
 
 void CclientDlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // контекст устройства для рисования
+		CPaintDC dc(this); // РєРѕРЅС‚РµРєСЃС‚ СѓСЃС‚СЂРѕР№СЃС‚РІР° РґР»СЏ СЂРёСЃРѕРІР°РЅРёСЏ
 
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-		// Выравнивание значка по центру клиентского прямоугольника
+		// Р’С‹СЂР°РІРЅРёРІР°РЅРёРµ Р·РЅР°С‡РєР° РїРѕ С†РµРЅС‚СЂСѓ РєР»РёРµРЅС‚СЃРєРѕРіРѕ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРєР°
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
@@ -100,7 +100,7 @@ void CclientDlg::OnPaint()
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// Нарисуйте значок
+		// РќР°СЂРёСЃСѓР№С‚Рµ Р·РЅР°С‡РѕРє
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
@@ -109,8 +109,8 @@ void CclientDlg::OnPaint()
 	}
 }
 
-// Система вызывает эту функцию для получения отображения курсора при перемещении
-//  свернутого окна.
+// РЎРёСЃС‚РµРјР° РІС‹Р·С‹РІР°РµС‚ СЌС‚Сѓ С„СѓРЅРєС†РёСЋ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РєСѓСЂСЃРѕСЂР° РїСЂРё РїРµСЂРµРјРµС‰РµРЅРёРё
+//  СЃРІРµСЂРЅСѓС‚РѕРіРѕ РѕРєРЅР°.
 HCURSOR CclientDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
@@ -133,7 +133,7 @@ void CclientDlg::projectUpdateRequested()
 {
 	dialog = new projectDialog();
 
-	currentID = _ttoi(table.GetItemText(table.GetSelectionMark(), 0)); //беру id выбранного курсового из таблицы
+	currentID = _ttoi(table.GetItemText(table.GetSelectionMark(), 0)); //Р±РµСЂСѓ id РІС‹Р±СЂР°РЅРЅРѕРіРѕ РєСѓСЂСЃРѕРІРѕРіРѕ РёР· С‚Р°Р±Р»РёС†С‹
 
 	dialog->name = table.GetItemText(table.GetSelectionMark(), 1);
 	dialog->amount = _ttoi(table.GetItemText(table.GetSelectionMark(), 2));
@@ -168,13 +168,13 @@ void CclientDlg::fullReportRequested()
 
 void CclientDlg::projectAddCompleted()
 {
-	if (currentID == 0) //создание проекта
+	if (currentID == 0) //СЃРѕР·РґР°РЅРёРµ РїСЂРѕРµРєС‚Р°
 	{
 		if (isSaleMode)
 			RequestGenerator::instance()->addSale(dialog->name.GetString(), dialog->amount, dialog->cost);
 		else
 			RequestGenerator::instance()->addPurchase(dialog->name.GetString(), dialog->amount, dialog->cost);
-	} else { //либо изменение существующего
+	} else { //Р»РёР±Рѕ РёР·РјРµРЅРµРЅРёРµ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ
 		if (isSaleMode)
 			RequestGenerator::instance()->editSale(currentID, dialog->name.GetString(), dialog->amount, dialog->cost);
 		else
@@ -194,13 +194,13 @@ void CclientDlg::lecturerAddCompleted()
 
 void CclientDlg::showError(WCHAR *message)
 {
-	this->MessageBox((LPCTSTR)message, L"Ошибка", MB_ICONERROR);
+	this->MessageBox((LPCTSTR)message, L"РћС€РёР±РєР°", MB_ICONERROR);
 }
 
 void CclientDlg::displayObjects(ObjectsContainer *list)
 {
 	int row=0;
-	Sale *object; //те же члены у Purchase
+	Sale *object; //С‚Рµ Р¶Рµ С‡Р»РµРЅС‹ Сѓ Purchase
 	WCHAR numbersTemp[5];
 
 	table.DeleteAllItems();
@@ -229,7 +229,7 @@ void CclientDlg::displayObjects(ObjectsContainer *list)
 void CclientDlg::displayValue(ObjectsContainer *list)
 {
 	list->next();
-	ValueObject *value = (ValueObject*)list->current(); //беру единственный объект
+	ValueObject *value = (ValueObject*)list->current(); //Р±РµСЂСѓ РµРґРёРЅСЃС‚РІРµРЅРЅС‹Р№ РѕР±СЉРµРєС‚
 
 	WCHAR messageBoxText[200];
 	swprintf(messageBoxText, L"%s: %s", value->name, value->value);
@@ -246,7 +246,7 @@ void CclientDlg::serverConnectRequested()
 	
 	if (RequestGenerator::instance()->connectToServer(addressDecoded, 1234) == 0)
 	{
-		connectionStateEdit.SetString(L"На данный момент: подключен");
+		connectionStateEdit.SetString(L"РќР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚: РїРѕРґРєР»СЋС‡РµРЅ");
 		UpdateData(FALSE);
 	}
 }
@@ -255,7 +255,7 @@ void CclientDlg::saveTextReport(ObjectsContainer *list)
 {
 	FILE *report = fopen("report.csv", "w, ccs=UTF-8");
 
-	fwprintf(report, L"Наименование;Количество;Цена за единицу\n");
+	fwprintf(report, L"РќР°РёРјРµРЅРѕРІР°РЅРёРµ;РљРѕР»РёС‡РµСЃС‚РІРѕ;Р¦РµРЅР° Р·Р° РµРґРёРЅРёС†Сѓ\n");
 
 	Sale *object;
 	while (list->next())
@@ -267,7 +267,7 @@ void CclientDlg::saveTextReport(ObjectsContainer *list)
 
 	fclose(report);
 
-	MessageBox(L"Отчет был сохранен в файл report.csv");
+	MessageBox(L"РћС‚С‡РµС‚ Р±С‹Р» СЃРѕС…СЂР°РЅРµРЅ РІ С„Р°Р№Р» report.csv");
 }
 
 void CclientDlg::productPurchasesRequested()

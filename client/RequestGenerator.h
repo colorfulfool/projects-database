@@ -8,7 +8,7 @@
 
 class CclientDlg;
 
-struct ResponseBody //содержит тело ответа и размер этого тела
+struct ResponseBody //СЃРѕРґРµСЂР¶РёС‚ С‚РµР»Рѕ РѕС‚РІРµС‚Р° Рё СЂР°Р·РјРµСЂ СЌС‚РѕРіРѕ С‚РµР»Р°
 {
 	int size;
 	char *body;

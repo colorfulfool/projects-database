@@ -18,8 +18,8 @@ void RequestProcessor::displatchRequest(RequestHeader *header, char* body)
 	
 	printf("%s %s -> ", header->method, header->URI);
 
-	if (strcmp(usecase, "/purchase")==0) responseDecorator(ViewsCollection::allPurchases, header, body); //перебираю представления в поисках подходящего
-	if (strcmp(usecase, "/sale")==0) responseDecorator(ViewsCollection::allSales, header, body); //перебираю представления в поисках подходящего
+	if (strcmp(usecase, "/purchase")==0) responseDecorator(ViewsCollection::allPurchases, header, body); //РїРµСЂРµР±РёСЂР°СЋ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ РІ РїРѕРёСЃРєР°С… РїРѕРґС…РѕРґСЏС‰РµРіРѕ
+	if (strcmp(usecase, "/sale")==0) responseDecorator(ViewsCollection::allSales, header, body); //РїРµСЂРµР±РёСЂР°СЋ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ РІ РїРѕРёСЃРєР°С… РїРѕРґС…РѕРґСЏС‰РµРіРѕ
 	if (strcmp(usecase, "/sale/product")==0) responseDecorator(ViewsCollection::productSales, header, body);
 	if (strcmp(usecase, "/purchase/product")==0) responseDecorator(ViewsCollection::productPurchases, header, body);
 	if (strcmp(usecase, "/profitability")==0) responseDecorator(ViewsCollection::allProfitability, header, body);
@@ -45,11 +45,11 @@ void RequestProcessor::responseDecorator(viewFunction view, RequestHeader *heade
 
 		strcpy(response->status, "OK");
 
-		if (responseBody != NULL) //сервер что-то возвращает
+		if (responseBody != NULL) //СЃРµСЂРІРµСЂ С‡С‚Рѕ-С‚Рѕ РІРѕР·РІСЂР°С‰Р°РµС‚
 		{
 			response->bodySize = responseBody->totalSize();
 			sendResponse(response, responseBody->dataPointer());
-		} else { //сервер не возвращает ничего (значит, и не надо)
+		} else { //СЃРµСЂРІРµСЂ РЅРµ РІРѕР·РІСЂР°С‰Р°РµС‚ РЅРёС‡РµРіРѕ (Р·РЅР°С‡РёС‚, Рё РЅРµ РЅР°РґРѕ)
 			response->bodySize = 0;
 			sendResponse(response, NULL);
 		}
@@ -67,7 +67,7 @@ void RequestProcessor::sendResponse(ResponseHeader *header, char* body)
 
 	send(working_socket, (char*)header, sizeof(ResponseHeader), NULL);
 
-	if (header->bodySize > 0) //нужно отправить еще и тело
+	if (header->bodySize > 0) //РЅСѓР¶РЅРѕ РѕС‚РїСЂР°РІРёС‚СЊ РµС‰Рµ Рё С‚РµР»Рѕ
 		send(working_socket, (char*)body, header->bodySize, NULL);
 }
 
@@ -76,13 +76,13 @@ int RequestProcessor::mainLoopIteration()
 	while (1)
 	{
 		RequestHeader *header = new RequestHeader();
-		if (recv(working_socket, (char*)header, sizeof(RequestHeader), NULL) >= 0) //принимаю заголовок
+		if (recv(working_socket, (char*)header, sizeof(RequestHeader), NULL) >= 0) //РїСЂРёРЅРёРјР°СЋ Р·Р°РіРѕР»РѕРІРѕРє
 		{
 			char *body;
 			if (header->bodySize > 0)
 			{
 				body = (char*)malloc(header->bodySize);
-				recv(working_socket, body, header->bodySize, NULL); //принимаю тело запроса
+				recv(working_socket, body, header->bodySize, NULL); //РїСЂРёРЅРёРјР°СЋ С‚РµР»Рѕ Р·Р°РїСЂРѕСЃР°
 			} else {
 				body = 0;
 			}

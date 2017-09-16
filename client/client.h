@@ -4,18 +4,18 @@
 
 #include <afxdisp.h>        // MFC Automation classes
 
-#include "resource.h"		// основные символы
+#include "resource.h"		// РѕСЃРЅРѕРІРЅС‹Рµ СЃРёРјРІРѕР»С‹
 
 class CclientApp : public CWinApp
 {
 public:
 	CclientApp();
 
-// Переопределение
+// РџРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёРµ
 public:
 	virtual BOOL InitInstance();
 
-// Реализация
+// Р РµР°Р»РёР·Р°С†РёСЏ
 
 	DECLARE_MESSAGE_MAP()
 };

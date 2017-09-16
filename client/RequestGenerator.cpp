@@ -11,7 +11,7 @@ RequestGenerator::RequestGenerator(void)
 	if (socket_id == INVALID_SOCKET)
 	{
 		int error = WSAGetLastError();
-		mainForm->MessageBox(L"Не удалось создать сокет.");
+		mainForm->MessageBox(L"РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃРѕРєРµС‚.");
 	}
 }
 
@@ -25,7 +25,7 @@ int RequestGenerator::connectToServer(char *address, int port)
 	int returned = connect(socket_id, (const sockaddr*)&server_address, sizeof(struct sockaddr_in));
 	if (returned != 0)
 	{
-		mainForm->MessageBox(L"Не удалось подключиться.");
+		mainForm->MessageBox(L"РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ.");
 	}
 
 	return returned;
@@ -48,7 +48,7 @@ RequestGenerator* RequestGenerator::instance()
 
 ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* body, int bodySize)
 {
-	RequestHeader *header = new RequestHeader; //заголовок запроса
+	RequestHeader *header = new RequestHeader; //Р·Р°РіРѕР»РѕРІРѕРє Р·Р°РїСЂРѕСЃР°
 
 	strcpy(header->method, method);
 	strcpy(header->URI, URI);
@@ -57,10 +57,10 @@ ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* b
 	send(socket_id, (char*)header, sizeof(RequestHeader), NULL);
 	send(socket_id, body, bodySize, NULL);
 
-	//тем временем сервер обраротал запрос
+	//С‚РµРј РІСЂРµРјРµРЅРµРј СЃРµСЂРІРµСЂ РѕР±СЂР°СЂРѕС‚Р°Р» Р·Р°РїСЂРѕСЃ
 
 	ResponseHeader *response = new ResponseHeader;
-	recv(socket_id, (char*)response, sizeof(RequestHeader), NULL); //принимаю заголовок ответа
+	recv(socket_id, (char*)response, sizeof(RequestHeader), NULL); //РїСЂРёРЅРёРјР°СЋ Р·Р°РіРѕР»РѕРІРѕРє РѕС‚РІРµС‚Р°
 
 	char *responseBody = (char*)malloc(response->bodySize);
 	if (response->bodySize > 0)
@@ -73,16 +73,16 @@ ResponseBody RequestGenerator::sendRequest(char method[4], char URI[50], char* b
 		resp.size = response->bodySize;
 
 		return resp;
-	} else if (strcmp(response->status, "FAIL") == 0) //если произошла ошибка
+	} else if (strcmp(response->status, "FAIL") == 0) //РµСЃР»Рё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°
 	{
 		WCHAR *messageEncoded = (WCHAR*)calloc(response->bodySize, sizeof(WCHAR));
 		mbstowcs(messageEncoded, responseBody, response->bodySize);
-		mainForm->showError(messageEncoded); //показываю сообщение об этом
+		mainForm->showError(messageEncoded); //РїРѕРєР°Р·С‹РІР°СЋ СЃРѕРѕР±С‰РµРЅРёРµ РѕР± СЌС‚РѕРј
 		
 		resp.size = 0;
-		return resp; //нуждается а проверке
+		return resp; //РЅСѓР¶РґР°РµС‚СЃСЏ Р° РїСЂРѕРІРµСЂРєРµ
 	} else {
-		mainForm->showError(L"Непонятный ответ сервера.");
+		mainForm->showError(L"РќРµРїРѕРЅСЏС‚РЅС‹Р№ РѕС‚РІРµС‚ СЃРµСЂРІРµСЂР°.");
 		
 		resp.size = 0;
 		return resp;

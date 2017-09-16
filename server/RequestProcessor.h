@@ -12,14 +12,14 @@ public:
 
 	static RequestProcessor* instance();
 
-	int mainLoopIteration(); //основной цикл работы сервера
+	int mainLoopIteration(); //РѕСЃРЅРѕРІРЅРѕР№ С†РёРєР» СЂР°Р±РѕС‚С‹ СЃРµСЂРІРµСЂР°
 private:
 	static RequestProcessor* _instance;
 	typedef ObjectsContainer* (*viewFunction) (char*, char*);
 
-	void displatchRequest(RequestHeader *header, char* body); //выбирает соответствующее представление
-	void responseDecorator(viewFunction view, RequestHeader *header, char* body); //использует представдение и формирует ответ сервера
-	void sendResponse(ResponseHeader *header, char* body); //отправляет ответ клиенту
+	void displatchRequest(RequestHeader *header, char* body); //РІС‹Р±РёСЂР°РµС‚ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ
+	void responseDecorator(viewFunction view, RequestHeader *header, char* body); //РёСЃРїРѕР»СЊР·СѓРµС‚ РїСЂРµРґСЃС‚Р°РІРґРµРЅРёРµ Рё С„РѕСЂРјРёСЂСѓРµС‚ РѕС‚РІРµС‚ СЃРµСЂРІРµСЂР°
+	void sendResponse(ResponseHeader *header, char* body); //РѕС‚РїСЂР°РІР»СЏРµС‚ РѕС‚РІРµС‚ РєР»РёРµРЅС‚Сѓ
 
 
 	// int listening_socket;

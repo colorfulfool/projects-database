@@ -8,11 +8,11 @@ class ViewsCollection
 public:
 	~ViewsCollection(void);
 
-	static ObjectsContainer* allSales(char method[6], char* requestBody); //нужен для операций над курсовыми (выборка, добавление, etc)
+	static ObjectsContainer* allSales(char method[6], char* requestBody); //РЅСѓР¶РµРЅ РґР»СЏ РѕРїРµСЂР°С†РёР№ РЅР°Рґ РєСѓСЂСЃРѕРІС‹РјРё (РІС‹Р±РѕСЂРєР°, РґРѕР±Р°РІР»РµРЅРёРµ, etc)
 	static ObjectsContainer* productSales(char method[6], char* requestBody);
 	static ObjectsContainer* productPurchases(char method[6], char* requestBody);
 
-	static ObjectsContainer* allPurchases(char method[6], char* requestBody); //для операций над студентами
+	static ObjectsContainer* allPurchases(char method[6], char* requestBody); //РґР»СЏ РѕРїРµСЂР°С†РёР№ РЅР°Рґ СЃС‚СѓРґРµРЅС‚Р°РјРё
 
 	static ObjectsContainer* allProfitability(char method[6], char* requestBody);
 	static ObjectsContainer* productProfitability(char method[6], char* requestBody);

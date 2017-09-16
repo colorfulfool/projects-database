@@ -17,26 +17,26 @@
 
 #include "afxcmn.h"
 
-// диалоговое окно CclientDlg
+// РґРёР°Р»РѕРіРѕРІРѕРµ РѕРєРЅРѕ CclientDlg
 class CclientDlg : public CDialogEx
 {
-// Создание
+// РЎРѕР·РґР°РЅРёРµ
 public:
-	CclientDlg(CWnd* pParent = NULL);	// стандартный конструктор
+	CclientDlg(CWnd* pParent = NULL);	// СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
 
-// Данные диалогового окна
+// Р”Р°РЅРЅС‹Рµ РґРёР°Р»РѕРіРѕРІРѕРіРѕ РѕРєРЅР°
 	enum { IDD = IDD_CLIENT_DIALOG };
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);	// поддержка DDX/DDV
+	virtual void DoDataExchange(CDataExchange* pDX);	// РїРѕРґРґРµСЂР¶РєР° DDX/DDV
 
 	CMenu mainMenu;
 
-// Реализация
+// Р РµР°Р»РёР·Р°С†РёСЏ
 protected:
 	HICON m_hIcon;
 
-	// Созданные функции схемы сообщений
+	// РЎРѕР·РґР°РЅРЅС‹Рµ С„СѓРЅРєС†РёРё СЃС…РµРјС‹ СЃРѕРѕР±С‰РµРЅРёР№
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();

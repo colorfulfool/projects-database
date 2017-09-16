@@ -1,13 +1,13 @@
-struct RequestHeader //заголовок запроса
+struct RequestHeader //Р·Р°РіРѕР»РѕРІРѕРє Р·Р°РїСЂРѕСЃР°
 {
-	char method[7]; //метод - GET, POST, PUT или DELETE
-	char URI[50]; //идентификатор ресурса, соответствует usecase'у серверной части
-	int bodySize; //размер тела запроса
+	char method[7]; //РјРµС‚РѕРґ - GET, POST, PUT РёР»Рё DELETE
+	char URI[50]; //РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЂРµСЃСѓСЂСЃР°, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ usecase'Сѓ СЃРµСЂРІРµСЂРЅРѕР№ С‡Р°СЃС‚Рё
+	int bodySize; //СЂР°Р·РјРµСЂ С‚РµР»Р° Р·Р°РїСЂРѕСЃР°
 };
 
-struct ResponseHeader //заголовок ответа
+struct ResponseHeader //Р·Р°РіРѕР»РѕРІРѕРє РѕС‚РІРµС‚Р°
 {
 	char URI[50];
-	char status[4]; //результат - OK или FAIL
+	char status[4]; //СЂРµР·СѓР»СЊС‚Р°С‚ - OK РёР»Рё FAIL
 	int bodySize;
 };

@@ -16,7 +16,7 @@ dataDialog::dataDialog(bool lecturerMode, CWnd* pParent /*=NULL*/)
 	, name(_T(""))
 	, group(_T(""))
 {
-	if (lecturerMode) //диалог вызван для добавления преподавателя - поле Группа не нужно, прячу его
+	if (lecturerMode) //РґРёР°Р»РѕРі РІС‹Р·РІР°РЅ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ РїСЂРµРїРѕРґР°РІР°С‚РµР»СЏ - РїРѕР»Рµ Р“СЂСѓРїРїР° РЅРµ РЅСѓР¶РЅРѕ, РїСЂСЏС‡Сѓ РµРіРѕ
 	{
 		groupDataEditControl.ShowWindow(SW_HIDE);
 		groupLabelControl.ShowWindow(SW_HIDE);

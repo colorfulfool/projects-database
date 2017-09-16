@@ -7,10 +7,10 @@
 
 void client_thread(void *socket_to_use)
 {
-	RequestProcessor *newProcessor = new RequestProcessor((int)socket_to_use); //новый Processor будет обрабатывать запросы
+	RequestProcessor *newProcessor = new RequestProcessor((int)socket_to_use); //РЅРѕРІС‹Р№ Processor Р±СѓРґРµС‚ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ Р·Р°РїСЂРѕСЃС‹
 	newProcessor->mainLoopIteration();
 
-	delete newProcessor; //клиент отключился - удаляю Processor, завершаю поток
+	delete newProcessor; //РєР»РёРµРЅС‚ РѕС‚РєР»СЋС‡РёР»СЃСЏ - СѓРґР°Р»СЏСЋ Processor, Р·Р°РІРµСЂС€Р°СЋ РїРѕС‚РѕРє
 	closesocket((int)socket_to_use);
 
 	return;
@@ -20,16 +20,16 @@ int main(int argc, char* argv[])
 {
 	int listening_socket, working_socket;
 
-	DatabaseWrapper::instance()->connectToDatabase(); //соединяюсь с базой данных
+	DatabaseWrapper::instance()->connectToDatabase(); //СЃРѕРµРґРёРЅСЏСЋСЃСЊ СЃ Р±Р°Р·РѕР№ РґР°РЅРЅС‹С…
 	if ((argc > 1)&&(strcpy(argv[1], "--create-database")))
 	{
-		DatabaseWrapper::instance()->recreateDatabase(); //пересоздаю базу данных, если пользователь потребовал
+		DatabaseWrapper::instance()->recreateDatabase(); //РїРµСЂРµСЃРѕР·РґР°СЋ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…, РµСЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїРѕС‚СЂРµР±РѕРІР°Р»
 	}
 
 	struct sockaddr_in server_address, client_address;
 	int size_of_address = sizeof(struct sockaddr_in);
 
-	listening_socket = socket(AF_INET, SOCK_STREAM, 0); //создаю сокет
+	listening_socket = socket(AF_INET, SOCK_STREAM, 0); //СЃРѕР·РґР°СЋ СЃРѕРєРµС‚
 
 	memset(&server_address, 0, sizeof(struct sockaddr_in));
 	server_address.sin_family = AF_INET; //IPv4
@@ -42,9 +42,9 @@ int main(int argc, char* argv[])
 
 	printf("Serving requests at %s:%d...\n", inet_ntoa(server_address.sin_addr), PORT);
 
-	while (1) //начинаю обрабатывать запросы
+	while (1) //РЅР°С‡РёРЅР°СЋ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ Р·Р°РїСЂРѕСЃС‹
 	{
-		working_socket = accept(listening_socket, (struct sockaddr *)&client_address, &size_of_address); //принимаю подключение клиента
+		working_socket = accept(listening_socket, (struct sockaddr *)&client_address, &size_of_address); //РїСЂРёРЅРёРјР°СЋ РїРѕРґРєР»СЋС‡РµРЅРёРµ РєР»РёРµРЅС‚Р°
 
 		printf("Client %s connected.\n", inet_ntoa(client_address.sin_addr));
 		_beginthread(client_thread, 0, (void*)working_socket);

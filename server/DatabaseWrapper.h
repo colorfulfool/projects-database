@@ -18,11 +18,11 @@ public:
 	static DatabaseWrapper* instance();
 
 	void connectToDatabase();
-	void recreateDatabase(); //создает структуру базы данных
+	void recreateDatabase(); //СЃРѕР·РґР°РµС‚ СЃС‚СЂСѓРєС‚СѓСЂСѓ Р±Р°Р·С‹ РґР°РЅРЅС‹С…
 
-	ObjectsContainer* getObjects(DatabaseObject *object); //возвращает все объекты указанного типа
-	ObjectsContainer* getRelatedObjects(DatabaseObject *object, LPCWSTR relatedName); //возвращает все объекты указанного типа
-	ObjectsContainer* getObjectsByAttribute(DatabaseObject *object, LPCWSTR attribute, LPCWSTR value); //возращает объекты указанного типа, имеющие указанное значение атрибута
+	ObjectsContainer* getObjects(DatabaseObject *object); //РІРѕР·РІСЂР°С‰Р°РµС‚ РІСЃРµ РѕР±СЉРµРєС‚С‹ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР°
+	ObjectsContainer* getRelatedObjects(DatabaseObject *object, LPCWSTR relatedName); //РІРѕР·РІСЂР°С‰Р°РµС‚ РІСЃРµ РѕР±СЉРµРєС‚С‹ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР°
+	ObjectsContainer* getObjectsByAttribute(DatabaseObject *object, LPCWSTR attribute, LPCWSTR value); //РІРѕР·СЂР°С‰Р°РµС‚ РѕР±СЉРµРєС‚С‹ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР°, РёРјРµСЋС‰РёРµ СѓРєР°Р·Р°РЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ Р°С‚СЂРёР±СѓС‚Р°
 	void updateObject(DatabaseObject *object);
 	void deleteObject(DatabaseObject *object);
 protected:
@@ -37,6 +37,6 @@ private:
 	WCHAR sqlQuery[300];
 	char sqlQueryEncoded[350];
 
-	ObjectsContainer* gatherQuriedObjects(DatabaseObject *type); //собирает результаты запроса в контейнер в виде объектов
+	ObjectsContainer* gatherQuriedObjects(DatabaseObject *type); //СЃРѕР±РёСЂР°РµС‚ СЂРµР·СѓР»СЊС‚Р°С‚С‹ Р·Р°РїСЂРѕСЃР° РІ РєРѕРЅС‚РµР№РЅРµСЂ РІ РІРёРґРµ РѕР±СЉРµРєС‚РѕРІ
 };
 
